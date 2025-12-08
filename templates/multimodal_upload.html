@@ -1,0 +1,1030 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>AI Medical Consultation - MRS Health</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            background: linear-gradient(135deg, #d4e8f0 0%, #e0f2f7 50%, #f0f8fb 100%);
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            min-height: 100vh;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        /* 3D Molecular Animation Background */
+        .molecule-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            pointer-events: none;
+            overflow: hidden;
+        }
+
+        .molecule {
+            position: absolute;
+            width: 150px;
+            height: 150px;
+            transform-style: preserve-3d;
+            will-change: transform, left, top;
+            backface-visibility: hidden;
+        }
+
+        .atom {
+            position: absolute;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            /* Ultra-realistic glass sphere */
+            background:
+                radial-gradient(circle at 28% 28%,
+                    rgba(255, 255, 255, 1) 0%,
+                    rgba(255, 255, 255, 0.9) 8%,
+                    rgba(220, 240, 250, 0.8) 20%,
+                    rgba(180, 220, 240, 0.7) 40%,
+                    rgba(140, 200, 230, 0.6) 65%,
+                    rgba(100, 170, 210, 0.5) 85%,
+                    rgba(70, 140, 190, 0.4) 100%
+                );
+            box-shadow:
+                /* Top-left bright highlight */
+                inset 10px 10px 15px rgba(255, 255, 255, 1),
+                /* Bottom-right dark shadow */
+                inset -10px -10px 18px rgba(0, 70, 120, 0.4),
+                /* Outer shadow for depth */
+                0 10px 25px rgba(100, 180, 220, 0.6),
+                0 4px 10px rgba(80, 160, 200, 0.5);
+            will-change: transform;
+            backface-visibility: hidden;
+        }
+
+        /* Internal bubble 1 */
+        .atom::before {
+            content: '';
+            position: absolute;
+            top: 22%;
+            left: 22%;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: radial-gradient(circle at 35% 35%,
+                rgba(255, 255, 255, 1),
+                rgba(255, 255, 255, 0.8) 40%,
+                rgba(255, 255, 255, 0.3) 70%,
+                transparent 100%);
+            box-shadow:
+                inset -2px -2px 3px rgba(0, 0, 0, 0.15),
+                0 2px 4px rgba(255, 255, 255, 0.6);
+        }
+
+        /* Internal bubble 2 */
+        .atom::after {
+            content: '';
+            position: absolute;
+            bottom: 28%;
+            right: 25%;
+            width: 5px;
+            height: 5px;
+            border-radius: 50%;
+            background: radial-gradient(circle at 35% 35%,
+                rgba(255, 255, 255, 0.95),
+                rgba(255, 255, 255, 0.7) 40%,
+                rgba(255, 255, 255, 0.2) 70%,
+                transparent 100%);
+            box-shadow:
+                inset -1px -1px 2px rgba(0, 0, 0, 0.1),
+                0 1px 3px rgba(255, 255, 255, 0.5);
+        }
+
+        .bond {
+            position: absolute;
+            height: 4px;
+            /* Metallic silver tube effect */
+            background: linear-gradient(to bottom,
+                rgba(240, 245, 250, 0.9) 0%,
+                rgba(200, 220, 235, 0.95) 20%,
+                rgba(180, 200, 220, 0.85) 50%,
+                rgba(150, 180, 205, 0.8) 80%,
+                rgba(130, 160, 190, 0.75) 100%
+            );
+            transform-origin: left center;
+            border-radius: 2px;
+            box-shadow:
+                /* Top highlight for cylindrical effect */
+                inset 0 1px 1px rgba(255, 255, 255, 0.9),
+                /* Bottom shadow for cylindrical effect */
+                inset 0 -1px 1px rgba(0, 60, 100, 0.4),
+                /* Outer glow */
+                0 2px 6px rgba(140, 190, 215, 0.4),
+                0 1px 3px rgba(100, 160, 200, 0.3);
+            will-change: transform, width;
+            backface-visibility: hidden;
+        }
+
+        /* Animated glow pulse for atoms */
+        @keyframes atomGlow {
+            0%, 100% {
+                box-shadow:
+                    0 0 15px rgba(0, 212, 255, 0.8),
+                    0 0 25px rgba(0, 212, 255, 0.5),
+                    inset 0 0 8px rgba(255, 255, 255, 0.6);
+            }
+            50% {
+                box-shadow:
+                    0 0 20px rgba(0, 212, 255, 1),
+                    0 0 35px rgba(0, 212, 255, 0.7),
+                    inset 0 0 12px rgba(255, 255, 255, 0.8);
+            }
+        }
+
+        body > *:not(.molecule-container) {
+            position: relative;
+            z-index: 1;
+        }
+
+        .navbar {
+            background: white !important;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            padding: 15px 0;
+        }
+
+        .logo {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+            animation: heartbeat 1.5s ease-in-out infinite;
+        }
+
+        .logo i {
+            color: white;
+            font-size: 24px;
+        }
+
+        @keyframes heartbeat {
+            0%, 100% {
+                transform: scale(1);
+            }
+            10% {
+                transform: scale(1.1);
+            }
+            20% {
+                transform: scale(1);
+            }
+            30% {
+                transform: scale(1.1);
+            }
+            40% {
+                transform: scale(1);
+            }
+        }
+
+        .consultation-header {
+            background: transparent;
+            color: #000000;
+            padding: 50px 0;
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .consultation-header-content {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            display: inline-block;
+            padding: 30px 50px;
+            border-radius: 15px;
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.4);
+        }
+
+        .consultation-header h1 {
+            font-size: 3.2rem;
+            font-weight: 700;
+            margin-bottom: 15px;
+            color: #FFFFFF;
+        }
+
+        .consultation-header p {
+            font-size: 1.4rem;
+            opacity: 1;
+            color: #FFFFFF;
+        }
+
+        .consultation-header .status-indicator {
+            background: #48BB78;
+        }
+
+        .consultation-header #systemStatus {
+            color: #FFFFFF;
+        }
+
+        .input-column {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 2px 15px rgba(0,0,0,0.08);
+            height: 100%;
+            transition: all 0.3s ease;
+        }
+
+        .input-column:hover {
+            box-shadow: 0 4px 20px rgba(0,0,0,0.12);
+            transform: translateY(-2px);
+        }
+
+        .column-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+            font-size: 24px;
+            color: white;
+        }
+
+        .image-icon { background: linear-gradient(135deg, #f093fb, #f5576c); }
+        .text-icon { background: linear-gradient(135deg, #4facfe, #00f2fe); }
+
+        .column-title {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #2D3748;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .drop-zone {
+            border: 3px dashed #f5576c;
+            border-radius: 12px;
+            padding: 60px 30px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: #F7FAFC;
+            min-height: 300px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .drop-zone:hover {
+            border-color: #f093fb;
+            background: #EDF2F7;
+        }
+
+        .drop-zone.dragover {
+            background: #E6FFFA;
+            border-color: #38B2AC;
+        }
+
+        #imagePreview img {
+            max-width: 100%;
+            max-height: 300px;
+            border-radius: 10px;
+            border: 2px solid #E2E8F0;
+            margin-top: 15px;
+        }
+
+        .text-input-area {
+            width: 100%;
+            min-height: 200px;
+            border: 2px solid #E2E8F0;
+            border-radius: 12px;
+            padding: 15px;
+            font-size: 1rem;
+            resize: vertical;
+            transition: all 0.3s ease;
+        }
+
+        .text-input-area:focus {
+            border-color: #4facfe;
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(79, 172, 254, 0.1);
+        }
+
+        .analyze-section {
+            margin: 40px 0;
+            text-align: center;
+        }
+
+        .analyze-btn {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border: none;
+            color: white;
+            font-size: 1.2rem;
+            font-weight: 700;
+            padding: 18px 60px;
+            border-radius: 50px;
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.4);
+            transition: all 0.3s ease;
+        }
+
+        .analyze-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 35px rgba(102, 126, 234, 0.5);
+        }
+
+        .loader {
+            border: 5px solid #f3f3f3;
+            border-top: 5px solid #667eea;
+            border-radius: 50%;
+            width: 60px;
+            height: 60px;
+            animation: spin 1s linear infinite;
+            margin: 30px auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .results-header {
+            text-align: center;
+            margin: 50px 0 30px;
+        }
+
+        .results-header h2 {
+            font-size: 2.2rem;
+            font-weight: 700;
+            color: #2D3748;
+            margin-bottom: 10px;
+        }
+
+        .results-header p {
+            color: #718096;
+            font-size: 1.1rem;
+        }
+
+        .recommendation-card {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 2px 15px rgba(0,0,0,0.08);
+            height: 100%;
+            margin-bottom: 25px;
+            transition: all 0.3s ease;
+        }
+
+        .recommendation-card:hover {
+            box-shadow: 0 4px 25px rgba(0,0,0,0.15);
+            transform: translateY(-3px);
+        }
+
+        .recommendation-card .card-icon {
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+            font-size: 30px;
+            color: white;
+        }
+
+        .diagnosis-card .card-icon { background: linear-gradient(135deg, #F39334, #F8576F); }
+        .activity-card .card-icon { background: linear-gradient(135deg, #99F741, #4ADE80); }
+        .medication-card .card-icon { background: linear-gradient(135deg, #268AF3, #7C3AED); }
+
+        .recommendation-card h4 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #2D3748;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .confidence-badge {
+            display: inline-block;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 8px 20px;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            margin: 10px 0;
+        }
+
+        .recommendation-list {
+            list-style: none;
+            padding: 0;
+            margin: 20px 0 0;
+        }
+
+        .recommendation-list li {
+            padding: 12px 15px;
+            background: #F7FAFC;
+            border-left: 4px solid #667eea;
+            border-radius: 6px;
+            margin-bottom: 10px;
+            color: #2D3748;
+            font-size: 1rem;
+        }
+
+        .model-info {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            margin-bottom: 30px;
+        }
+
+        .model-info strong {
+            color: #667eea;
+        }
+
+        .status-indicator {
+            display: inline-block;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            margin-right: 8px;
+            animation: blink 2s infinite;
+        }
+
+        .status-online { background: #48BB78; }
+        .status-processing { background: #F59E0B; }
+
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+    </style>
+</head>
+<body>
+    <!-- 3D Molecules Background -->
+    <div class="molecule-container" id="moleculeContainer"></div>
+
+    <script>
+    // Create 3D rotating molecules
+    function createMolecules() {
+        const container = document.getElementById('moleculeContainer');
+        const numMolecules = 8;  // Reduced for better performance
+
+        for (let i = 0; i < numMolecules; i++) {
+            const molecule = document.createElement('div');
+            molecule.className = 'molecule';
+
+            // Random position
+            molecule.style.left = Math.random() * 100 + '%';
+            molecule.style.top = Math.random() * 100 + '%';
+
+            // Create molecule structure (3-4 atoms for better performance)
+            const numAtoms = 3 + Math.floor(Math.random() * 2);
+            const atoms = [];
+            const angleStep = (Math.PI * 2) / numAtoms;
+
+            for (let j = 0; j < numAtoms; j++) {
+                const atom = document.createElement('div');
+                atom.className = 'atom';
+                atom.dataset.index = j;
+                molecule.appendChild(atom);
+                atoms.push(atom);
+            }
+
+            container.appendChild(molecule);
+
+            // Animation parameters
+            const rotationSpeed = 0.004 + Math.random() * 0.006;
+            const moveSpeed = {
+                x: (Math.random() - 0.5) * 1.2,
+                y: (Math.random() - 0.5) * 1.2
+            };
+            const radius = 60 + Math.random() * 30;
+
+            let rotation = Math.random() * Math.PI * 2;
+            let tilt = Math.random() * Math.PI * 2;
+            let position = {
+                x: parseFloat(molecule.style.left),
+                y: parseFloat(molecule.style.top)
+            };
+
+            // Animate this molecule
+            function animateMolecule() {
+                rotation += rotationSpeed;
+                tilt += rotationSpeed * 0.5;
+
+                // Move molecule
+                position.x += moveSpeed.x;
+                position.y += moveSpeed.y;
+
+                // Wrap around screen
+                if (position.x < -10) position.x = 110;
+                if (position.x > 110) position.x = -10;
+                if (position.y < -10) position.y = 110;
+                if (position.y > 110) position.y = -10;
+
+                molecule.style.left = position.x + '%';
+                molecule.style.top = position.y + '%';
+
+                // Update atom positions with 3D rotation
+                atoms.forEach((atom, index) => {
+                    const angle = angleStep * index + rotation;
+                    const depth = Math.sin(angle + tilt);
+                    const scale = 0.7 + (depth + 1) * 0.15; // 0.7 to 1.0
+                    const opacity = 0.5 + (depth + 1) * 0.25; // 0.5 to 1.0
+
+                    const x = Math.cos(angle) * radius;
+                    const y = Math.sin(angle) * radius * Math.cos(tilt);
+
+                    atom.style.transform = `translate(${x}px, ${y}px) scale(${scale})`;
+                    atom.style.opacity = opacity;
+                    atom.style.zIndex = Math.floor((depth + 1) * 10);
+
+                    // Create/update bonds to next atom
+                    if (index < atoms.length) {
+                        const nextIndex = (index + 1) % atoms.length;
+                        const nextAtom = atoms[nextIndex];
+
+                        let bond = atom.querySelector('.bond');
+                        if (!bond) {
+                            bond = document.createElement('div');
+                            bond.className = 'bond';
+                            atom.appendChild(bond);
+                        }
+
+                        const nextAngle = angleStep * nextIndex + rotation;
+                        const nextDepth = Math.sin(nextAngle + tilt);
+                        const nextX = Math.cos(nextAngle) * radius;
+                        const nextY = Math.sin(nextAngle) * radius * Math.cos(tilt);
+
+                        const dx = nextX - x;
+                        const dy = nextY - y;
+                        const length = Math.sqrt(dx * dx + dy * dy);
+                        const bondAngle = Math.atan2(dy, dx);
+
+                        bond.style.width = length + 'px';
+                        bond.style.transform = `rotate(${bondAngle}rad)`;
+                        bond.style.left = '16px';
+                        bond.style.top = '16px';
+
+                        const avgDepth = (depth + nextDepth) / 2;
+                        bond.style.opacity = 0.3 + (avgDepth + 1) * 0.15;
+                    }
+                });
+
+                requestAnimationFrame(animateMolecule);
+            }
+
+            animateMolecule();
+        }
+    }
+
+    // Initialize molecules when page loads
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', createMolecules);
+    } else {
+        createMolecules();
+    }
+    </script>
+
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-light">
+        <div class="container-fluid">
+            <div class="logo">
+                <i class="fas fa-heartbeat"></i>
+            </div>
+            <a class="navbar-brand text-dark fw-bold" href="#">MRS Health</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    <li class="nav-item">
+                        <a class="nav-link text-dark" href="/">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-dark" href="/about">About</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-dark" href="/symptoms">Symptoms</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-dark" href="/contact">Contact</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-dark" href="/developer">Developer</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-dark" href="/blog">Blog</a>
+                    </li>
+                    {% if current_user.is_authenticated %}
+                    <li class="nav-item">
+                        <a class="nav-link text-dark" href="{{ url_for('dashboard') }}">Dashboard</a>
+                    </li>
+                    {% endif %}
+                </ul>
+                <div class="d-flex">
+                    {% if current_user.is_authenticated %}
+                        <span class="navbar-text me-3 text-dark">
+                            Welcome, {{ current_user.first_name or current_user.username }}!
+                        </span>
+                        <a href="{{ url_for('auth.profile') }}" class="btn btn-outline-primary me-2">Profile</a>
+                        <a href="{{ url_for('auth.logout') }}" class="btn btn-outline-danger">Logout</a>
+                    {% else %}
+                        <a href="{{ url_for('auth.login') }}" class="btn btn-outline-primary me-2">Login</a>
+                        <a href="{{ url_for('auth.register') }}" class="btn btn-outline-success">Register</a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Header -->
+    <div class="consultation-header">
+        <div class="consultation-header-content">
+            <h1><i class="fas fa-robot"></i> AI Medical Consultation</h1>
+            <p>Provide your symptoms through image or text for intelligent diagnosis</p>
+            <div class="mt-3">
+                <span class="status-indicator status-online"></span>
+                <span id="systemStatus">System Online</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Consultation Interface -->
+    <div class="container mb-5">
+        <div class="row g-4">
+            <!-- Image Upload Column -->
+            <div class="col-md-6">
+                <div class="input-column">
+                    <div class="column-icon image-icon">
+                        <i class="fas fa-image"></i>
+                    </div>
+                    <h3 class="column-title">Image/Video Upload</h3>
+                    <p class="text-center text-muted mb-4">Upload medical imagery</p>
+
+                    <div class="drop-zone" id="dropZone">
+                        <i class="fas fa-cloud-upload-alt fa-3x text-danger mb-3"></i>
+                        <h5 class="text-dark">Drag & Drop Image</h5>
+                        <p class="text-muted mb-0">or click to browse</p>
+                        <small class="text-muted">(PNG, JPG, JPEG, GIF, BMP, WEBP)</small>
+                        <input type="file" id="imageInput" accept="image/png,image/jpg,image/jpeg,image/gif,image/bmp,image/webp" style="display: none;">
+                    </div>
+
+                    <div id="imagePreview" style="display: none; text-align: center;">
+                        <img id="previewImg" alt="Preview">
+                        <button type="button" id="removeImage" class="btn btn-danger btn-sm mt-2">
+                            <i class="fas fa-times"></i> Remove Image
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Text Query Column -->
+            <div class="col-md-6">
+                <div class="input-column">
+                    <div class="column-icon text-icon">
+                        <i class="fas fa-comment-medical"></i>
+                    </div>
+                    <h3 class="column-title">Textual Query</h3>
+                    <p class="text-center text-muted mb-4">Type additional notes</p>
+
+                    <textarea
+                        class="text-input-area"
+                        id="textQuery"
+                        placeholder="Enter additional symptoms, medical history, or questions here...
+
+Examples:
+• I have itching and skin rash for 3 days
+• Pain in joints, headache, fever
+• Difficulty breathing, chest pain"
+                    ></textarea>
+
+                    <div class="mt-3">
+                        <small class="text-muted">
+                            <i class="fas fa-info-circle"></i> Combine image and text for best accuracy
+                        </small>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Analyze Button -->
+        <div class="analyze-section">
+            <button id="analyzeBtn" class="analyze-btn">
+                <i class="fas fa-microscope me-2"></i>Analyze Symptoms
+            </button>
+        </div>
+
+        <!-- Loading Section -->
+        <div id="loadingSection" style="display: none; text-align: center;">
+            <div class="loader"></div>
+            <p class="text-muted mt-3">Analyzing your data with AI models...</p>
+        </div>
+    </div>
+
+    <!-- Results Section -->
+    <div id="resultsSection" style="display: none;">
+        <div class="container">
+            <div class="results-header">
+                <h2><i class="fas fa-heartbeat"></i> AI-Driven Recommendations</h2>
+                <p>Based on multimodal analysis of your input</p>
+            </div>
+
+            <!-- Model Info -->
+            <div class="model-info">
+                <div class="row">
+                    <div class="col-md-6">
+                        <strong><i class="fas fa-robot"></i> Model Used:</strong> <span id="modelUsed"></span>
+                    </div>
+                    <div class="col-md-6">
+                        <strong><i class="fas fa-code-branch"></i> Fusion Method:</strong> <span id="fusionMethod"></span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Recommendation Cards -->
+            <div class="row">
+                <!-- Presumptive Diagnosis -->
+                <div class="col-md-3">
+                    <div class="recommendation-card diagnosis-card">
+                        <div class="card-icon">
+                            <i class="fas fa-diagnoses"></i>
+                        </div>
+                        <h4>Presumptive Diagnosis</h4>
+                        <div class="text-center">
+                            <h3 class="text-dark mb-2" id="diseaseName"></h3>
+                            <span class="confidence-badge" id="confidenceText">AI Confidence: --</span>
+                        </div>
+                        <div class="mt-4">
+                            <h6 class="text-muted mb-3">Description:</h6>
+                            <p id="diseaseDescription" class="text-dark"></p>
+                        </div>
+                        <div class="mt-3">
+                            <h6 class="text-muted mb-3">Precautions:</h6>
+                            <ul class="recommendation-list" id="precautionsList"></ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Activity & Exercises -->
+                <div class="col-md-3">
+                    <div class="recommendation-card activity-card">
+                        <div class="card-icon">
+                            <i class="fas fa-running"></i>
+                        </div>
+                        <h4>Activity & Exercises</h4>
+                        <div class="mt-4">
+                            <h6 class="text-muted mb-3">Recommended Workouts:</h6>
+                            <ul class="recommendation-list" id="workoutsList"></ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Diet & Nutrition -->
+                <div class="col-md-3">
+                    <div class="recommendation-card diet-card">
+                        <div class="card-icon" style="background: linear-gradient(135deg, #00b894 0%, #00cec9 100%);">
+                            <i class="fas fa-apple-alt"></i>
+                        </div>
+                        <h4>Diet & Nutrition</h4>
+                        <div class="mt-4">
+                            <h6 class="text-muted mb-3">Dietary Recommendations:</h6>
+                            <ul class="recommendation-list" id="dietsList"></ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Medication & Supplements -->
+                <div class="col-md-3">
+                    <div class="recommendation-card medication-card">
+                        <div class="card-icon">
+                            <i class="fas fa-pills"></i>
+                        </div>
+                        <h4>Medication & Supplements</h4>
+                        <div class="mt-4">
+                            <h6 class="text-muted mb-3">Suggested Medications:</h6>
+                            <ul class="recommendation-list" id="medicationsList"></ul>
+                        </div>
+                        <div class="alert alert-warning mt-4">
+                            <i class="fas fa-exclamation-triangle"></i>
+                            <small><strong>Disclaimer:</strong> This is AI-generated guidance. Always consult a licensed healthcare professional before taking any medication.</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Important Disclaimer -->
+            <div class="row mt-4">
+                <div class="col-12">
+                    <div class="alert alert-danger" style="border-radius: 15px; padding: 25px; border-left: 5px solid #dc3545;">
+                        <h5 class="alert-heading"><i class="fas fa-exclamation-triangle me-2"></i>Important Disclaimer</h5>
+                        <hr>
+                        <p class="mb-2"><strong>This project is for educational purposes only.</strong> MRS Health is a Minimum Viable Product (MVP) developed as part of machine learning studies at Woosong University. It is designed to demonstrate the concept and potential of AI-powered healthcare solutions.</p>
+                        <ul class="mb-2">
+                            <li>This application is <strong>not intended for real-world medical diagnosis or treatment.</strong></li>
+                            <li>The predictions provided by this system should <strong>not replace professional medical advice</strong>, diagnosis, or treatment.</li>
+                            <li><strong>Always consult a qualified healthcare provider</strong> for any health concerns or before making any decisions related to your health.</li>
+                            <li>The machine learning models used in this project are trained on limited datasets and may not accurately reflect all medical conditions.</li>
+                        </ul>
+                        <p class="mb-0"><i class="fas fa-user-md me-1"></i> This project serves as a proof of concept. Please rely on certified medical professionals for actual healthcare needs.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // DOM Elements
+        const dropZone = document.getElementById('dropZone');
+        const imageInput = document.getElementById('imageInput');
+        const imagePreview = document.getElementById('imagePreview');
+        const previewImg = document.getElementById('previewImg');
+        const removeImageBtn = document.getElementById('removeImage');
+        const textQueryInput = document.getElementById('textQuery');
+        const analyzeBtn = document.getElementById('analyzeBtn');
+        const loadingSection = document.getElementById('loadingSection');
+        const resultsSection = document.getElementById('resultsSection');
+
+        let selectedImage = null;
+
+        // Drag and drop functionality
+        dropZone.addEventListener('click', () => imageInput.click());
+
+        dropZone.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            dropZone.classList.add('dragover');
+        });
+
+        dropZone.addEventListener('dragleave', () => {
+            dropZone.classList.remove('dragover');
+        });
+
+        dropZone.addEventListener('drop', (e) => {
+            e.preventDefault();
+            dropZone.classList.remove('dragover');
+            const files = e.dataTransfer.files;
+            if (files.length > 0) {
+                handleImageSelect(files[0]);
+            }
+        });
+
+        imageInput.addEventListener('change', (e) => {
+            if (e.target.files.length > 0) {
+                handleImageSelect(e.target.files[0]);
+            }
+        });
+
+        function handleImageSelect(file) {
+            if (!file.type.startsWith('image/')) {
+                alert('Please select a valid image file');
+                return;
+            }
+
+            selectedImage = file;
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                previewImg.src = e.target.result;
+                imagePreview.style.display = 'block';
+                dropZone.style.display = 'none';
+            };
+            reader.readAsDataURL(file);
+        }
+
+        removeImageBtn.addEventListener('click', () => {
+            selectedImage = null;
+            imagePreview.style.display = 'none';
+            dropZone.style.display = 'flex';
+            imageInput.value = '';
+        });
+
+        // Analyze button
+        analyzeBtn.addEventListener('click', async () => {
+            const textQuery = textQueryInput.value.trim();
+
+            if (!textQuery && !selectedImage) {
+                alert('Please provide at least symptoms or an image');
+                return;
+            }
+
+            // Prepare form data
+            const formData = new FormData();
+            formData.append('symptoms', textQuery);
+            formData.append('fusion_mode', 'auto');
+
+            if (selectedImage) {
+                formData.append('image', selectedImage);
+            }
+
+            // Show loading
+            loadingSection.style.display = 'block';
+            resultsSection.style.display = 'none';
+            analyzeBtn.disabled = true;
+
+            try {
+                const response = await fetch('/multimodal/predict', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    displayResults(data);
+                } else {
+                    alert('Error: ' + data.message);
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('An error occurred during analysis');
+            } finally {
+                loadingSection.style.display = 'none';
+                analyzeBtn.disabled = false;
+            }
+        });
+
+        function displayResults(data) {
+            // Model info
+            document.getElementById('modelUsed').textContent = data.model_used || 'Multimodal AI';
+            document.getElementById('fusionMethod').textContent = data.fusion_method || 'Auto';
+
+            // Disease
+            document.getElementById('diseaseName').textContent = data.predicted_disease || 'Unknown';
+
+            // Confidence
+            const confidence = data.confidence ? (data.confidence * 100).toFixed(1) + '%' : 'N/A';
+            document.getElementById('confidenceText').textContent = 'AI Confidence: ' + confidence;
+
+            // Description
+            document.getElementById('diseaseDescription').textContent = data.description || 'No description available';
+
+            // Precautions
+            const precautionsList = document.getElementById('precautionsList');
+            precautionsList.innerHTML = '';
+            if (data.precautions && data.precautions.length > 0) {
+                data.precautions.forEach(precaution => {
+                    const li = document.createElement('li');
+                    li.textContent = precaution;
+                    precautionsList.appendChild(li);
+                });
+            } else {
+                precautionsList.innerHTML = '<li>No specific precautions available</li>';
+            }
+
+            // Workouts
+            const workoutsList = document.getElementById('workoutsList');
+            workoutsList.innerHTML = '';
+            if (data.workout && data.workout.length > 0) {
+                data.workout.forEach(workout => {
+                    const li = document.createElement('li');
+                    li.textContent = workout;
+                    workoutsList.appendChild(li);
+                });
+            } else {
+                workoutsList.innerHTML = '<li>No specific workout recommendations</li>';
+            }
+
+            // Diets
+            const dietsList = document.getElementById('dietsList');
+            dietsList.innerHTML = '';
+            if (data.diet && data.diet.length > 0) {
+                data.diet.forEach(diet => {
+                    const li = document.createElement('li');
+                    li.textContent = diet;
+                    dietsList.appendChild(li);
+                });
+            } else {
+                dietsList.innerHTML = '<li>No specific dietary recommendations</li>';
+            }
+
+            // Medications
+            const medicationsList = document.getElementById('medicationsList');
+            medicationsList.innerHTML = '';
+            if (data.medications && data.medications.length > 0) {
+                data.medications.forEach(medication => {
+                    const li = document.createElement('li');
+                    li.textContent = medication;
+                    medicationsList.appendChild(li);
+                });
+            } else {
+                medicationsList.innerHTML = '<li>No specific medications suggested</li>';
+            }
+
+            // Show results
+            resultsSection.style.display = 'block';
+
+            // Scroll to results
+            resultsSection.scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // Set system status
+        document.getElementById('systemStatus').textContent = 'System Online';
+    </script>
+</body>
+</html>

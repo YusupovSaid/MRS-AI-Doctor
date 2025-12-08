@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register - MRS Health</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        body {
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Inter', sans-serif;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* DNA Helix Container */
+        .dna-background {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            pointer-events: none;
+            overflow: hidden;
+        }
+
+        /* DNA SVG */
+        .dna-svg {
+            position: absolute;
+            top: 50%;
+            left: 0;
+            transform: translateY(-50%);
+            width: 200%;
+            height: 800px;
+        }
+
+        /* DNA Helix - no CSS animation, using JavaScript */
+        .dna-helix {
+        }
+
+        /* DNA Spheres glow effect */
+        .dna-sphere {
+            filter: drop-shadow(0 0 8px #00d4ff) drop-shadow(0 0 15px rgba(0, 212, 255, 0.6));
+        }
+
+        /* DNA strands glow */
+        .dna-strand-top,
+        .dna-strand-bottom {
+            filter: drop-shadow(0 0 4px rgba(0, 212, 255, 0.8));
+        }
+
+        /* Floating Particles */
+        .particle {
+            position: absolute;
+            width: 8px;
+            height: 8px;
+            background: rgba(255, 255, 255, 0.6);
+            border-radius: 50%;
+            animation: particleFloat 15s infinite;
+            box-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
+        }
+
+        @keyframes dnaSlideEndless {
+            0% {
+                transform: translateX(-50%);
+            }
+            100% {
+                transform: translateX(0%);
+            }
+        }
+
+        @keyframes particleFloat {
+            0% {
+                transform: translateY(100vh) translateX(0) scale(0);
+                opacity: 0;
+            }
+            10% {
+                opacity: 0.8;
+                transform: translateY(80vh) translateX(20px) scale(1);
+            }
+            50% {
+                opacity: 1;
+                transform: translateY(40vh) translateX(-10px) scale(1.2);
+            }
+            90% {
+                opacity: 0.8;
+                transform: translateY(5vh) translateX(30px) scale(1);
+            }
+            100% {
+                transform: translateY(-10vh) translateX(50px) scale(0);
+                opacity: 0;
+            }
+        }
+
+        body > *:not(.dna-background) {
+            position: relative;
+            z-index: 1;
+        }
+
+        .register-card {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            max-width: 450px;
+            width: 100%;
+        }
+        .logo {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .logo-icon {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+            margin-bottom: 15px;
+        }
+        .logo-icon i {
+            font-size: 40px;
+            color: white;
+        }
+        .logo h2 {
+            color: #2D3748;
+            font-weight: 700;
+            margin-top: 10px;
+        }
+        .form-control {
+            padding: 12px;
+            border-radius: 10px;
+            border: 2px solid #E2E8F0;
+        }
+        .form-control:focus {
+            border-color: #7C3AED;
+            box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.1);
+        }
+        .btn-primary {
+            background: #7C3AED;
+            border: none;
+            padding: 12px;
+            border-radius: 10px;
+            font-weight: 600;
+            width: 100%;
+        }
+        .btn-primary:hover {
+            background: #6D28D9;
+        }
+        .login-link {
+            text-align: center;
+            margin-top: 20px;
+            color: #64748B;
+        }
+        .login-link a {
+            color: #7C3AED;
+            text-decoration: none;
+            font-weight: 600;
+        }
+        .login-link a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <!-- DNA Animated Background -->
+    <div class="dna-background">
+        <svg class="dna-svg" width="100%" height="100%" viewBox="0 0 1200 400" preserveAspectRatio="xMidYMid slice">
+            <!-- DNA Helix Group -->
+            <g class="dna-helix">
+                <!-- Top strand (curve line) -->
+                <path class="dna-strand-top" stroke="#00d4ff" stroke-width="2" fill="none" opacity="0.6"/>
+                <!-- Bottom strand (curve line) -->
+                <path class="dna-strand-bottom" stroke="#00d4ff" stroke-width="2" fill="none" opacity="0.6"/>
+
+                <!-- Connecting rungs and spheres will be added via CSS animation -->
+                <g class="dna-segments"></g>
+            </g>
+        </svg>
+
+        <!-- Floating Particles -->
+        <div class="particle" style="left: 10%; animation-delay: 0s;"></div>
+        <div class="particle" style="left: 20%; animation-delay: 2s;"></div>
+        <div class="particle" style="left: 30%; animation-delay: 4s;"></div>
+        <div class="particle" style="left: 40%; animation-delay: 1s;"></div>
+        <div class="particle" style="left: 50%; animation-delay: 3s;"></div>
+        <div class="particle" style="left: 60%; animation-delay: 5s;"></div>
+        <div class="particle" style="left: 70%; animation-delay: 2.5s;"></div>
+        <div class="particle" style="left: 80%; animation-delay: 4.5s;"></div>
+        <div class="particle" style="left: 90%; animation-delay: 1.5s;"></div>
+    </div>
+
+    <script>
+    // Create DNA helix animation with rotation
+    const createDNAHelix = () => {
+        const svg = document.querySelector('.dna-svg');
+        const helixGroup = document.querySelector('.dna-helix');
+
+        const numSegments = 120; // Doubled segments for longer DNA with more bubbles
+        const amplitude = 60;
+        const centerY = 200; // Centered vertically in the viewport
+        const rotationSpeed = 0.05; // Rotation speed
+        const slideSpeed = 2; // Horizontal movement speed
+        let time = 0;
+        let slideOffset = 0;
+
+        function updateDNA() {
+            // Clear previous elements
+            helixGroup.innerHTML = '';
+
+            // Create strands
+            const topStrand = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+            const bottomStrand = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+
+            let topPath = 'M -1200 ' + centerY;
+            let bottomPath = 'M -1200 ' + centerY;
+
+            for (let i = 0; i <= numSegments; i++) {
+                const x = i * (4800 / numSegments) - 1200 + slideOffset; // Extended DNA length
+                const angle = (i / numSegments) * Math.PI * 24 + time; // More wave cycles
+
+                // 3D rotation effect using cosine for depth
+                const topY = centerY - Math.sin(angle) * amplitude;
+                const bottomY = centerY + Math.sin(angle) * amplitude;
+                const depth = Math.cos(angle); // -1 to 1
+
+                topPath += ` L ${x} ${topY}`;
+                bottomPath += ` L ${x} ${bottomY}`;
+
+                // Create connecting rungs with rotation-based opacity
+                if (i % 1 === 0) {  // Changed from % 2 to % 1 to create more bubbles
+                    const group = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+
+                    // Opacity based on depth (front is brighter, back is dimmer)
+                    const opacity = (depth + 1) / 2; // 0 to 1
+
+                    // Connecting line
+                    const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+                    line.setAttribute('x1', x);
+                    line.setAttribute('y1', topY);
+                    line.setAttribute('x2', x);
+                    line.setAttribute('y2', bottomY);
+                    line.setAttribute('stroke', '#00d4ff');
+                    line.setAttribute('stroke-width', '1.5');
+                    line.setAttribute('opacity', opacity * 0.6);
+                    group.appendChild(line);
+
+                    // Top sphere
+                    const topCircle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+                    topCircle.setAttribute('cx', x);
+                    topCircle.setAttribute('cy', topY);
+                    topCircle.setAttribute('r', 5 + depth * 2); // Size changes with depth
+                    topCircle.setAttribute('fill', '#00d4ff');
+                    topCircle.setAttribute('opacity', opacity);
+                    topCircle.setAttribute('filter', 'drop-shadow(0 0 8px #00d4ff)');
+                    group.appendChild(topCircle);
+
+                    // Bottom sphere
+                    const bottomCircle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+                    bottomCircle.setAttribute('cx', x);
+                    bottomCircle.setAttribute('cy', bottomY);
+                    bottomCircle.setAttribute('r', 5 + depth * 2);
+                    bottomCircle.setAttribute('fill', '#00d4ff');
+                    bottomCircle.setAttribute('opacity', opacity);
+                    bottomCircle.setAttribute('filter', 'drop-shadow(0 0 8px #00d4ff)');
+                    group.appendChild(bottomCircle);
+
+                    helixGroup.appendChild(group);
+                }
+            }
+
+            topStrand.setAttribute('d', topPath);
+            topStrand.setAttribute('stroke', '#00d4ff');
+            topStrand.setAttribute('stroke-width', '2');
+            topStrand.setAttribute('fill', 'none');
+            topStrand.setAttribute('opacity', '0.6');
+            topStrand.setAttribute('filter', 'drop-shadow(0 0 4px rgba(0, 212, 255, 0.8))');
+
+            bottomStrand.setAttribute('d', bottomPath);
+            bottomStrand.setAttribute('stroke', '#00d4ff');
+            bottomStrand.setAttribute('stroke-width', '2');
+            bottomStrand.setAttribute('fill', 'none');
+            bottomStrand.setAttribute('opacity', '0.6');
+            bottomStrand.setAttribute('filter', 'drop-shadow(0 0 4px rgba(0, 212, 255, 0.8))');
+
+            helixGroup.appendChild(topStrand);
+            helixGroup.appendChild(bottomStrand);
+
+            time += rotationSpeed;
+            slideOffset += slideSpeed;
+
+            // Reset slide offset for seamless loop (matches the DNA pattern repeat)
+            if (slideOffset >= 2400) {
+                slideOffset = 0;
+            }
+
+            requestAnimationFrame(updateDNA);
+        }
+
+        updateDNA();
+    };
+
+    createDNAHelix();
+    </script>
+
+    <div class="register-card">
+        <div class="logo">
+            <div class="logo-icon">
+                <i class="fas fa-heartbeat"></i>
+            </div>
+            <h2>Create Account</h2>
+            <p class="text-muted">Join MRS Health Today</p>
+        </div>
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ 'danger' if category == 'danger' else 'success' }} alert-dismissible fade show" role="alert">
+                        {{ message }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+        <form method="POST" action="{{ url_for('auth.register') }}">
+            <div class="mb-3">
+                <label class="form-label">Full Name</label>
+                <input type="text" class="form-control" name="first_name" placeholder="John Doe" required>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Email Address</label>
+                <input type="email" class="form-control" name="email" placeholder="john@example.com" required>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Password</label>
+                <input type="password" class="form-control" name="password" placeholder="Minimum 6 characters" required>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Confirm Password</label>
+                <input type="password" class="form-control" name="confirm_password" placeholder="Re-enter password" required>
+            </div>
+            <button type="submit" class="btn btn-primary">
+                <i class="fas fa-user-plus me-2"></i>Create Account
+            </button>
+        </form>
+
+        <div class="login-link">
+            Already have an account? <a href="{{ url_for('auth.login') }}">Login here</a>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

@@ -1,0 +1,1281 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MRS Health - Innovation Clinic</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            overflow-x: hidden;
+            background: #2c3e50;
+            min-height: 100vh;
+        }
+
+        /* Navigation */
+        .navbar {
+            background: rgba(255, 255, 255, 0.98);
+            padding: 1rem 2rem;
+            box-shadow: 0 2px 20px rgba(0,0,0,0.08);
+        }
+
+        .navbar-brand {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: #1e293b;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .logo-icon {
+            width: 45px;
+            height: 45px;
+            background: linear-gradient(135deg, #4f46e5, #2563eb);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 22px;
+            animation: heartbeat 1.5s ease-in-out infinite;
+        }
+
+        @keyframes heartbeat {
+            0%, 100% {
+                transform: scale(1);
+            }
+            10% {
+                transform: scale(1.1);
+            }
+            20% {
+                transform: scale(1);
+            }
+            30% {
+                transform: scale(1.1);
+            }
+            40% {
+                transform: scale(1);
+            }
+        }
+
+        .nav-link {
+            color: #334155 !important;
+            font-weight: 500;
+            margin: 0 1rem;
+            transition: color 0.3s;
+        }
+
+        .nav-link:hover {
+            color: #4f46e5 !important;
+        }
+
+        .top-right-actions {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .location-badge {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            background: #f1f5f9;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            color: #64748b;
+        }
+
+        .icon-button {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .icon-button.phone {
+            background: #1e293b;
+            color: white;
+        }
+
+        .icon-button.notification {
+            background: #4f46e5;
+            color: white;
+        }
+
+        .icon-button.profile {
+            background: #1e293b;
+            color: white;
+        }
+
+        .icon-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+        }
+
+        .btn-auth {
+            padding: 0.5rem 1.2rem;
+            border-radius: 25px;
+            font-weight: 600;
+            font-size: 0.95rem;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-decoration: none;
+            display: inline-block;
+            margin: 0 0.3rem;
+        }
+
+        .btn-login {
+            background: white;
+            color: #1e293b !important;
+            border: 2px solid #1e293b;
+        }
+
+        .btn-login:hover {
+            background: #1e293b;
+            color: white !important;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(30, 41, 59, 0.3);
+        }
+
+        .btn-register {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white !important;
+        }
+
+        .btn-register:hover {
+            background: linear-gradient(135deg, #5a67d8 0%, #6b3f8f 100%);
+            color: white !important;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+        }
+
+        .navbar-nav .nav-item {
+            display: flex;
+            align-items: center;
+        }
+
+        /* Hero Section */
+        .hero-section {
+            position: relative;
+            min-height: 90vh;
+            display: flex;
+            align-items: center;
+            overflow: hidden;
+            background: linear-gradient(to right, #f8fafc 0%, #f8fafc 50%, #4169E1 50%, #4169E1 100%);
+        }
+
+        .hero-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 50%;
+            width: 150px;
+            height: 100%;
+            background: #4169E1;
+            transform: translateX(-50%);
+            clip-path: ellipse(75px 100% at 50% 50%);
+            z-index: 1;
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 2;
+            padding: 2rem 0 4rem 0;
+        }
+
+        .innovation-image-box {
+            width: 320px;
+            height: 180px;
+            margin-bottom: 1.5rem;
+            overflow: hidden;
+            border-radius: 20px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        .innovation-image-box img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .hero-title {
+            font-size: 4.5rem;
+            font-weight: 900;
+            line-height: 1.1;
+            margin-bottom: 1.5rem;
+            color: #1e293b;
+        }
+
+        .innovation-text {
+            display: block;
+            margin-bottom: 0.3rem;
+            animation: zoomInOut 3s ease-in-out infinite;
+        }
+
+        .clinic-text {
+            display: block;
+            animation: zoomInOut 3s ease-in-out infinite;
+            animation-delay: 1.5s;
+        }
+
+        @keyframes zoomInOut {
+            0%, 100% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.1);
+            }
+        }
+
+        .title-dot {
+            display: inline-block;
+            width: 25px;
+            height: 25px;
+            background: #4f46e5;
+            border-radius: 50%;
+            margin-left: 0.5rem;
+            vertical-align: middle;
+        }
+
+        .hero-subtitle {
+            font-size: 1.1rem;
+            color: #64748b;
+            margin-bottom: 0.5rem;
+            line-height: 1.6;
+        }
+
+        .hero-description {
+            font-size: 1.1rem;
+            color: #64748b;
+            margin-bottom: 3rem;
+        }
+
+        .care-word {
+            font-weight: 700;
+            color: #1e293b;
+        }
+
+        .btn-find-doctor {
+            background: #4f46e5;
+            color: white;
+            padding: 1rem 2.5rem;
+            border-radius: 50px;
+            font-weight: 600;
+            border: none;
+            font-size: 1.1rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.8rem;
+            transition: all 0.3s;
+        }
+
+        .btn-find-doctor:hover {
+            background: #4338ca;
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(79, 70, 229, 0.4);
+        }
+
+        .doctor-icon {
+            width: 35px;
+            height: 35px;
+            background: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #4f46e5;
+        }
+
+        /* Doctor Image Section */
+        .doctor-section {
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .doctor-image-container {
+            position: relative;
+            width: 100%;
+            max-width: 600px;
+            border-radius: 30px;
+            overflow: hidden;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.15);
+        }
+
+        .doctor-image {
+            width: 100%;
+            height: auto;
+            position: relative;
+            z-index: 2;
+            border-radius: 30px;
+        }
+
+        /* Floating Labels */
+        .floating-label {
+            position: absolute;
+            background: white;
+            padding: 0.8rem 1.5rem;
+            border-radius: 50px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+            font-weight: 600;
+            font-size: 1rem;
+            z-index: 10;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        .label-reliability {
+            top: 25%;
+            left: 10%;
+        }
+
+        .label-experience {
+            top: 20%;
+            right: 5%;
+        }
+
+        .label-professional {
+            bottom: 30%;
+            right: 0%;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+
+        /* Right Side Info */
+        .info-section {
+            position: absolute;
+            top: 10%;
+            right: 10%;
+            background: white;
+            padding: 2rem;
+            border-radius: 20px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+            max-width: 350px;
+            z-index: 10;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        .info-title {
+            font-size: 1.8rem;
+            font-weight: 800;
+            color: #1e293b;
+            margin-bottom: 1rem;
+        }
+
+        .info-text {
+            font-size: 0.95rem;
+            color: #64748b;
+            line-height: 1.6;
+            margin-bottom: 1.5rem;
+        }
+
+        .generation-highlight {
+            font-weight: 700;
+            color: #4f46e5;
+        }
+
+        .testimonial-section {
+            position: absolute;
+            bottom: 10%;
+            right: 10%;
+            background: white;
+            padding: 1.5rem;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            max-width: 300px;
+            z-index: 10;
+            animation: float 3s ease-in-out infinite;
+            animation-delay: 1s;
+        }
+
+        .testimonial-text {
+            font-size: 0.9rem;
+            color: #64748b;
+            line-height: 1.5;
+            margin-bottom: 1rem;
+        }
+
+        .testimonial-avatars {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            border: 3px solid white;
+            margin-left: -10px;
+        }
+
+        .avatar:first-child {
+            margin-left: 0;
+        }
+
+        .arrow-icon {
+            width: 40px;
+            height: 40px;
+            background: #4f46e5;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            margin-left: auto;
+        }
+
+        /* Stats Section */
+        .stats-section {
+            position: absolute;
+            bottom: 8%;
+            left: 5%;
+            background: white;
+            padding: 2rem 2.5rem;
+            border-radius: 20px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+            z-index: 10;
+        }
+
+        .stats-header {
+            font-size: 0.9rem;
+            color: #64748b;
+            margin-bottom: 1.5rem;
+            text-align: center;
+        }
+
+        .stats-grid {
+            display: flex;
+            gap: 3rem;
+            align-items: center;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: #1e293b;
+            margin-bottom: 0.3rem;
+        }
+
+        .stat-plus {
+            color: #4f46e5;
+        }
+
+        .stat-label {
+            font-size: 0.85rem;
+            color: #64748b;
+            font-weight: 500;
+        }
+
+        /* Virtual Tour Gallery */
+        .virtual-tour-container {
+            position: relative;
+            width: 400px;
+            background: white;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.15);
+            margin-bottom: 1.5rem;
+        }
+
+        .tour-slider {
+            position: relative;
+            width: 100%;
+            height: 200px;
+            overflow: hidden;
+        }
+
+        .tour-slides {
+            display: flex;
+            width: 200%;
+            height: 100%;
+            transition: transform 0.5s ease;
+        }
+
+        .tour-slide {
+            width: 50%;
+            height: 100%;
+        }
+
+        .tour-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .tour-info {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(to top, rgba(0,0,0,0.7), transparent);
+            padding: 2rem 1.5rem 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+        }
+
+        .tour-label {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: white;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .tour-dots {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.4);
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .dot.active {
+            background: white;
+            width: 30px;
+            border-radius: 5px;
+        }
+
+        .play-button {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 50px;
+            height: 50px;
+            background: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #4f46e5;
+            font-size: 1.2rem;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+
+        /* Decorative Elements */
+        .blob-1, .blob-2, .blob-3 {
+            position: absolute;
+            border-radius: 50%;
+            opacity: 0.1;
+            z-index: 0;
+        }
+
+        .blob-1 {
+            width: 400px;
+            height: 400px;
+            background: #60a5fa;
+            top: 10%;
+            right: -10%;
+        }
+
+        .blob-2 {
+            width: 300px;
+            height: 300px;
+            background: #a78bfa;
+            bottom: 20%;
+            left: -5%;
+        }
+
+        .blob-3 {
+            width: 250px;
+            height: 250px;
+            background: #34d399;
+            top: 50%;
+            right: 30%;
+        }
+
+        /* Symptoms Section */
+        .symptoms-section {
+            background: linear-gradient(to bottom, #f8fafc, #ffffff);
+            padding: 5rem 0;
+        }
+
+        .symptoms-icon {
+            text-align: center;
+            margin-bottom: 1rem;
+        }
+
+        .symptoms-icon i {
+            font-size: 3rem;
+            color: #4f46e5;
+            animation: pulse 1.5s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                transform: scale(1);
+                opacity: 1;
+            }
+            50% {
+                transform: scale(1.1);
+                opacity: 0.8;
+            }
+        }
+
+        /* Heartbeat line animation behind text */
+        .heartbeat-background {
+            position: absolute;
+            top: 50%;
+            left: 0;
+            width: 100%;
+            height: 80px;
+            transform: translateY(-50%);
+            overflow: hidden;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        .heartbeat-svg {
+            position: absolute;
+            width: 200%;
+            height: 100%;
+            animation: heartbeat-move 8s linear infinite;
+        }
+
+        @keyframes heartbeat-move {
+            0% {
+                transform: translateX(0);
+            }
+            100% {
+                transform: translateX(-50%);
+            }
+        }
+
+        .heartbeat-path {
+            fill: none;
+            stroke: rgba(79, 70, 229, 0.15);
+            stroke-width: 2;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+        }
+
+        .symptoms-content {
+            position: relative;
+            z-index: 1;
+        }
+
+        .symptoms-title {
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: #1e293b;
+            text-align: center;
+            margin-bottom: 1rem;
+        }
+
+        .symptoms-subtitle {
+            font-size: 1.1rem;
+            color: #64748b;
+            text-align: center;
+            max-width: 700px;
+            margin: 0 auto 3rem;
+        }
+
+        .symptom-card {
+            display: block;
+            background: white;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            transition: all 0.3s ease;
+            text-decoration: none;
+            height: 100%;
+        }
+
+        .symptom-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 8px 30px rgba(79, 70, 229, 0.2);
+        }
+
+        .symptom-image-wrapper {
+            position: relative;
+            width: 100%;
+            height: 250px;
+            overflow: hidden;
+        }
+
+        .symptom-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            object-position: center top;
+            transition: transform 0.3s ease;
+        }
+
+        .symptom-card:hover .symptom-image {
+            transform: scale(1.05);
+        }
+
+        .symptom-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(to bottom, rgba(79, 70, 229, 0.1), rgba(79, 70, 229, 0.3));
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .symptom-card:hover .symptom-overlay {
+            opacity: 1;
+        }
+
+        .symptom-content {
+            padding: 1.5rem;
+        }
+
+        .symptom-name {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #1e293b;
+            margin-bottom: 0.8rem;
+        }
+
+        .symptom-description {
+            font-size: 0.95rem;
+            color: #64748b;
+            line-height: 1.6;
+            margin: 0;
+        }
+
+        /* CTA Section */
+        .cta-section {
+            background: linear-gradient(135deg, #7c3aed 0%, #6d28d9 100%);
+            padding: 5rem 0;
+            margin-top: -2rem;
+        }
+
+        .cta-title {
+            font-size: 2.8rem;
+            font-weight: 800;
+            color: white;
+            margin-bottom: 1rem;
+        }
+
+        .cta-subtitle {
+            font-size: 1.2rem;
+            color: rgba(255, 255, 255, 0.9);
+            margin-bottom: 2.5rem;
+        }
+
+        .btn-cta {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: white;
+            color: #7c3aed;
+            padding: 1rem 2.5rem;
+            font-size: 1.1rem;
+            font-weight: 700;
+            border-radius: 50px;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+        }
+
+        .btn-cta:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 30px rgba(0,0,0,0.2);
+            color: #6d28d9;
+        }
+
+        /* Footer */
+        .footer {
+            background: #2d3748;
+            color: white;
+            padding-top: 1rem;
+        }
+
+        .footer-brand {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: white;
+            margin-bottom: 1rem;
+        }
+
+        .footer-description {
+            color: #94a3b8;
+            line-height: 1.6;
+            font-size: 0.95rem;
+        }
+
+        .footer-heading {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: white;
+            margin-bottom: 1.5rem;
+        }
+
+        .footer-links {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .footer-links li {
+            margin-bottom: 0.8rem;
+        }
+
+        .footer-links a {
+            color: #94a3b8;
+            text-decoration: none;
+            transition: color 0.3s;
+            font-size: 0.95rem;
+        }
+
+        .footer-links a:hover {
+            color: white;
+        }
+
+        .social-icons {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .social-icon {
+            width: 45px;
+            height: 45px;
+            background: #475569;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.2rem;
+            text-decoration: none;
+            transition: all 0.3s;
+        }
+
+        .social-icon:hover {
+            background: #7c3aed;
+            transform: translateY(-3px);
+        }
+
+        .footer-bottom {
+            border-top: 1px solid #475569;
+            padding: 2rem 0;
+            margin-top: 1rem;
+        }
+
+        .copyright {
+            text-align: center;
+            color: #94a3b8;
+            margin: 0;
+            font-size: 0.9rem;
+        }
+
+        @media (max-width: 992px) {
+            .hero-title {
+                font-size: 3rem;
+            }
+
+            .info-section,
+            .testimonial-section,
+            .stats-section,
+            .virtual-tour-card {
+                position: relative;
+                top: auto;
+                bottom: auto;
+                left: auto;
+                right: auto;
+                margin: 2rem auto;
+            }
+
+            .floating-label {
+                display: none;
+            }
+
+            .symptoms-title {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-light">
+        <div class="container-fluid px-4">
+            <a class="navbar-brand" href="/">
+                <div class="logo-icon">
+                    <i class="fas fa-heartbeat"></i>
+                </div>
+                MRS Health
+            </a>
+
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav mx-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/about">About us</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/symptoms">Symptoms</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('multimodal.upload_page') }}">Services</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/contact">Contact</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="{{ url_for('auth.login') }}" class="btn-auth btn-login">Login</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="{{ url_for('auth.register') }}" class="btn-auth btn-register">Register</a>
+                    </li>
+                </ul>
+
+                <div class="top-right-actions">
+                    <a href="/contact" class="icon-button phone">
+                        <i class="fas fa-phone"></i>
+                    </a>
+                    {% if current_user.is_authenticated %}
+                        <a href="{{ url_for('dashboard') }}" class="icon-button profile">
+                            <i class="fas fa-user"></i>
+                        </a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero-section">
+        <!-- Decorative Blobs -->
+        <div class="blob-1"></div>
+        <div class="blob-2"></div>
+        <div class="blob-3"></div>
+
+        <div class="container-fluid px-5">
+            <div class="row align-items-center">
+                <!-- Left Content -->
+                <div class="col-lg-5">
+                    <div class="hero-content">
+                        <!-- Virtual Tour Gallery -->
+                        <div class="virtual-tour-container">
+                            <div class="tour-slider">
+                                <div class="tour-slides" id="tourSlides">
+                                    <div class="tour-slide">
+                                        <img src="{{ url_for('static', filename='virt3.avif') }}" alt="Virtual Tour" class="tour-image">
+                                    </div>
+                                    <div class="tour-slide">
+                                        <img src="{{ url_for('static', filename='virt4.avif') }}" alt="Virtual Tour" class="tour-image">
+                                    </div>
+                                </div>
+                                <div class="tour-info">
+                                    <div class="tour-label">Virtual tour</div>
+                                    <div class="tour-dots">
+                                        <div class="dot active" onclick="showSlide(0)"></div>
+                                        <div class="dot" onclick="showSlide(1)"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <h1 class="hero-title">
+                            <span class="innovation-text">Innovation</span>
+                            <span class="clinic-text">Clinic<span class="title-dot"></span></span>
+                        </h1>
+                        <p class="hero-subtitle">
+                            We <strong>treat</strong> not only symptoms
+                        </p>
+                        <p class="hero-description">
+                            - we <span class="care-word">care</span> about each person.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Right Content - Doctor Image -->
+                <div class="col-lg-7">
+                    <div class="doctor-section">
+                        <div class="doctor-image-container">
+                            <!-- Doctor Image -->
+                            <img src="{{ url_for('static', filename='head_page.png') }}" alt="Doctor" class="doctor-image">
+
+                            <!-- Floating Labels -->
+                            <div class="floating-label label-reliability">
+                                Reliability
+                            </div>
+                            <div class="floating-label label-experience">
+                                Experience
+                            </div>
+                            <div class="floating-label label-professional">
+                                Professional
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Advanced Technologies Info Box -->
+        <div class="info-section">
+            <h3 class="info-title">With Advanced Technologies</h3>
+            <p class="info-text">
+                The latest <span class="generation-highlight">generation equipment</span>, digital diagnostics, advanced techniques — all of this works for your health.
+            </p>
+        </div>
+
+        <!-- Testimonial Box -->
+        <div class="testimonial-section">
+            <p class="testimonial-text">
+                We appreciate every feedback, because it inspires us to become better.
+            </p>
+            <div class="testimonial-avatars">
+                <img src="{{ url_for('static', filename='bacg2.jpg') }}" alt="Avatar" class="avatar">
+                <img src="{{ url_for('static', filename='head_page.png') }}" alt="Avatar" class="avatar">
+                <div class="arrow-icon">
+                    <i class="fas fa-arrow-right"></i>
+                </div>
+            </div>
+        </div>
+
+        <script>
+            let currentSlide = 0;
+            const tourSlides = document.getElementById('tourSlides');
+            const dots = document.querySelectorAll('.virtual-tour-container .dot');
+
+            function showSlide(index) {
+                currentSlide = index;
+                tourSlides.style.transform = `translateX(-${index * 50}%)`;
+
+                dots.forEach((dot, i) => {
+                    dot.classList.toggle('active', i === index);
+                });
+            }
+
+            // Auto-advance slides every 4 seconds
+            setInterval(() => {
+                currentSlide = (currentSlide + 1) % 2;
+                showSlide(currentSlide);
+            }, 4000);
+        </script>
+    </section>
+
+    <!-- Common Symptoms Section -->
+    <section class="symptoms-section">
+        <div class="container py-5">
+            <div class="symptoms-content">
+                <!-- Animated Heart Icon -->
+                <div class="symptoms-icon">
+                    <i class="fas fa-heartbeat"></i>
+                </div>
+
+                <!-- Heartbeat Line Behind Text -->
+                <div style="position: relative;">
+                    <div class="heartbeat-background">
+                        <svg class="heartbeat-svg" viewBox="0 0 2400 60" preserveAspectRatio="none">
+                            <path class="heartbeat-path" d="M0,30 L150,30 L170,15 L180,45 L190,10 L200,50 L210,30 L350,30 L370,15 L380,45 L390,10 L400,50 L410,30 L550,30 L570,15 L580,45 L590,10 L600,50 L610,30 L750,30 L770,15 L780,45 L790,10 L800,50 L810,30 L950,30 L970,15 L980,45 L990,10 L1000,50 L1010,30 L1150,30 L1170,15 L1180,45 L1190,10 L1200,50 L1210,30 L1350,30 L1370,15 L1380,45 L1390,10 L1400,50 L1410,30 L1550,30 L1570,15 L1580,45 L1590,10 L1600,50 L1610,30 L1750,30 L1770,15 L1780,45 L1790,10 L1800,50 L1810,30 L1950,30 L1970,15 L1980,45 L1990,10 L2000,50 L2010,30 L2150,30 L2170,15 L2180,45 L2190,10 L2200,50 L2210,30 L2400,30"></path>
+                        </svg>
+                    </div>
+
+                    <h2 class="symptoms-title">Common Symptoms We Analyze</h2>
+                    <p class="symptoms-subtitle">
+                        Our AI system can identify and analyze these symptoms and many more for accurate diagnosis.
+                    </p>
+                </div>
+            </div>
+
+            <div class="row g-4 mt-4">
+                <!-- Skin Rash -->
+                <div class="col-md-4">
+                    <a href="/symptoms" class="symptom-card">
+                        <div class="symptom-image-wrapper">
+                            <img src="{{ url_for('static', filename='shut2.png') }}" alt="Skin Rash" class="symptom-image">
+                            <div class="symptom-overlay"></div>
+                        </div>
+                        <div class="symptom-content">
+                            <h3 class="symptom-name">Skin Rash</h3>
+                            <p class="symptom-description">
+                                Detecting various types of skin rashes and eruptions with high accuracy.
+                            </p>
+                        </div>
+                    </a>
+                </div>
+
+                <!-- High Fever -->
+                <div class="col-md-4">
+                    <a href="/symptoms" class="symptom-card">
+                        <div class="symptom-image-wrapper">
+                            <img src="{{ url_for('static', filename='qoy.jpg') }}" alt="High Fever" class="symptom-image">
+                            <div class="symptom-overlay"></div>
+                        </div>
+                        <div class="symptom-content">
+                            <h3 class="symptom-name">High Fever</h3>
+                            <p class="symptom-description">
+                                Analysis of fever patterns and associated symptoms for diagnosis.
+                            </p>
+                        </div>
+                    </a>
+                </div>
+
+                <!-- Headache -->
+                <div class="col-md-4">
+                    <a href="/symptoms" class="symptom-card">
+                        <div class="symptom-image-wrapper">
+                            <img src="{{ url_for('static', filename='shut4.png') }}" alt="Headache" class="symptom-image">
+                            <div class="symptom-overlay"></div>
+                        </div>
+                        <div class="symptom-content">
+                            <h3 class="symptom-name">Headache</h3>
+                            <p class="symptom-description">
+                                Identifying different types of headaches and their underlying causes.
+                            </p>
+                        </div>
+                    </a>
+                </div>
+
+                <!-- Cough -->
+                <div class="col-md-4">
+                    <a href="/symptoms" class="symptom-card">
+                        <div class="symptom-image-wrapper">
+                            <img src="{{ url_for('static', filename='Africa.webp') }}" alt="Cough" class="symptom-image">
+                            <div class="symptom-overlay"></div>
+                        </div>
+                        <div class="symptom-content">
+                            <h3 class="symptom-name">Cough</h3>
+                            <p class="symptom-description">
+                                Analyzing cough patterns and respiratory symptoms for accurate assessment.
+                            </p>
+                        </div>
+                    </a>
+                </div>
+
+                <!-- Fatigue -->
+                <div class="col-md-4">
+                    <a href="/symptoms" class="symptom-card">
+                        <div class="symptom-image-wrapper">
+                            <img src="{{ url_for('static', filename='shut6.jpg') }}" alt="Fatigue" class="symptom-image">
+                            <div class="symptom-overlay"></div>
+                        </div>
+                        <div class="symptom-content">
+                            <h3 class="symptom-name">Fatigue</h3>
+                            <p class="symptom-description">
+                                Evaluating fatigue levels and related symptoms for comprehensive diagnosis.
+                            </p>
+                        </div>
+                    </a>
+                </div>
+
+                <!-- Joint Pain -->
+                <div class="col-md-4">
+                    <a href="/symptoms" class="symptom-card">
+                        <div class="symptom-image-wrapper">
+                            <img src="{{ url_for('static', filename='shutterstock_2480850611.jpg') }}" alt="Joint Pain" class="symptom-image">
+                            <div class="symptom-overlay"></div>
+                        </div>
+                        <div class="symptom-content">
+                            <h3 class="symptom-name">Joint Pain</h3>
+                            <p class="symptom-description">
+                                Identifying joint pain patterns and associated musculoskeletal conditions.
+                            </p>
+                        </div>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="cta-section">
+        <div class="container text-center py-5">
+            <h2 class="cta-title">Ready to Get Started?</h2>
+            <p class="cta-subtitle">
+                Join thousands of users who trust our AI-powered healthcare platform
+            </p>
+            <a href="{{ url_for('auth.register') }}" class="btn-cta">
+                Create Free Account
+                <i class="fas fa-arrow-right ms-2"></i>
+            </a>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="row py-5">
+                <!-- Brand Section -->
+                <div class="col-md-4 mb-4">
+                    <h5 class="footer-brand">
+                        <i class="fas fa-heartbeat me-2"></i>
+                        MRS Health
+                    </h5>
+                    <p class="footer-description">
+                        AI-powered medical recommendation system providing expert healthcare solutions.
+                    </p>
+                </div>
+
+                <!-- Quick Links -->
+                <div class="col-md-4 mb-4">
+                    <h5 class="footer-heading">Quick Links</h5>
+                    <ul class="footer-links">
+                        <li><a href="/about">About Us</a></li>
+                        <li><a href="/contact">Contact</a></li>
+                        <li><a href="/developer">Developers</a></li>
+                        <li><a href="/blog">Blog</a></li>
+                    </ul>
+                </div>
+
+                <!-- Social Links -->
+                <div class="col-md-4 mb-4">
+                    <h5 class="footer-heading">Connect With Us</h5>
+                    <div class="social-icons">
+                        <a href="https://yusupovsaid.github.io/" target="_blank" class="social-icon"><i class="fab fa-github"></i></a>
+                        <a href="https://www.instagram.com/abbosjonov_said/" target="_blank" class="social-icon"><i class="fab fa-instagram"></i></a>
+                        <a href="https://t.me/abbosjonov_said" target="_blank" class="social-icon"><i class="fab fa-telegram"></i></a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Copyright -->
+            <div class="footer-bottom">
+                <p class="copyright">© 2025 MRS Health. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

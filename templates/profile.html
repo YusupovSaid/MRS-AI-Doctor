@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Profile - Online Healthcare Centre</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            background: #000000;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            min-height: 100vh;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 200%;
+            height: 200%;
+            background-image:
+                radial-gradient(5px 5px at 20px 30px, #FFD700, transparent),
+                radial-gradient(5px 5px at 60px 70px, #FFD700, transparent),
+                radial-gradient(4px 4px at 50px 50px, #FFD700, transparent),
+                radial-gradient(4px 4px at 130px 80px, #FFD700, transparent),
+                radial-gradient(5px 5px at 90px 10px, #FFD700, transparent),
+                radial-gradient(4px 4px at 160px 120px, #FFD700, transparent),
+                radial-gradient(5px 5px at 200px 40px, #FFD700, transparent),
+                radial-gradient(4px 4px at 170px 90px, #FFD700, transparent),
+                radial-gradient(4px 4px at 240px 60px, #FFD700, transparent),
+                radial-gradient(5px 5px at 280px 100px, #FFD700, transparent),
+                radial-gradient(4px 4px at 310px 20px, #FFD700, transparent),
+                radial-gradient(4px 4px at 350px 110px, #FFD700, transparent),
+                radial-gradient(5px 5px at 380px 50px, #FFD700, transparent),
+                radial-gradient(4px 4px at 420px 80px, #FFD700, transparent);
+            background-size: 450px 150px;
+            background-repeat: repeat;
+            z-index: 0;
+            pointer-events: none;
+            animation: twinkle 3s ease-in-out infinite, moveStars 120s linear infinite;
+        }
+
+        @keyframes twinkle {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        @keyframes moveStars {
+            0% {
+                transform: translate(0, 0);
+            }
+            100% {
+                transform: translate(-50%, -50%);
+            }
+        }
+
+        body > * {
+            position: relative;
+            z-index: 1;
+        }
+        .navbar-logo {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+            margin-right: 10px;
+            animation: heartbeat 1.5s ease-in-out infinite;
+        }
+
+        .navbar-logo i {
+            color: white;
+            font-size: 20px;
+        }
+
+        @keyframes heartbeat {
+            0%, 100% {
+                transform: scale(1);
+            }
+            10% {
+                transform: scale(1.1);
+            }
+            20% {
+                transform: scale(1);
+            }
+            30% {
+                transform: scale(1.1);
+            }
+            40% {
+                transform: scale(1);
+            }
+        }
+
+        .navbar-brand {
+            font-weight: 700;
+            font-size: 1.5rem;
+            color: var(--primary-purple);
+            display: flex;
+            align-items: center;
+        }
+        .profile-container {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            padding: 40px;
+            margin: 30px auto;
+            max-width: 800px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+        .btn-primary {
+            background: linear-gradient(45deg, #667eea 0%, #764ba2 100%);
+            border: none;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="/">
+                <div class="navbar-logo">
+                    <i class="fas fa-heartbeat"></i>
+                </div>
+                MRS Health
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    <li class="nav-item">
+                        <a class="nav-link text-dark" href="/">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-dark" href="{{ url_for('dashboard') }}">Dashboard</a>
+                    </li>
+                </ul>
+                <div class="d-flex">
+                    <span class="navbar-text me-3 text-dark">
+                        Welcome, {{ current_user.first_name }}!
+                    </span>
+                    <a href="{{ url_for('auth.profile') }}" class="btn btn-outline-primary me-2">Profile</a>
+                    <a href="{{ url_for('auth.logout') }}" class="btn btn-outline-danger">Logout</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="profile-container">
+            <h1 class="mb-4">Your Profile</h1>
+
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    {% for category, message in messages %}
+                        <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+                            {{ message }}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                        </div>
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
+
+            <ul class="nav nav-tabs mb-4" id="profileTabs" role="tablist">
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link active" id="info-tab" data-bs-toggle="tab" data-bs-target="#info" type="button">
+                        Personal Information
+                    </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="medical-tab" data-bs-toggle="tab" data-bs-target="#medical" type="button">
+                        Medical Information
+                    </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="password-tab" data-bs-toggle="tab" data-bs-target="#password" type="button">
+                        Change Password
+                    </button>
+                </li>
+            </ul>
+
+            <div class="tab-content" id="profileTabsContent">
+                <!-- Personal Information Tab -->
+                <div class="tab-pane fade show active" id="info" role="tabpanel">
+                    <form method="POST" action="{{ url_for('auth.profile') }}">
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="first_name" class="form-label">First Name</label>
+                                <input type="text" class="form-control" id="first_name" name="first_name" value="{{ current_user.first_name }}" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="last_name" class="form-label">Last Name</label>
+                                <input type="text" class="form-control" id="last_name" name="last_name" value="{{ current_user.last_name }}" required>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="email" class="form-label">Email</label>
+                            <input type="email" class="form-control" id="email" name="email" value="{{ current_user.email }}" required>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="phone" class="form-label">Phone Number</label>
+                            <input type="tel" class="form-control" id="phone" name="phone" value="{{ current_user.phone or '' }}">
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="date_of_birth" class="form-label">Date of Birth</label>
+                                <input type="date" class="form-control" id="date_of_birth" name="date_of_birth" value="{{ current_user.date_of_birth or '' }}">
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="gender" class="form-label">Gender</label>
+                                <select class="form-select" id="gender" name="gender">
+                                    <option value="">Prefer not to say</option>
+                                    <option value="Male" {% if current_user.gender == 'Male' %}selected{% endif %}>Male</option>
+                                    <option value="Female" {% if current_user.gender == 'Female' %}selected{% endif %}>Female</option>
+                                    <option value="Other" {% if current_user.gender == 'Other' %}selected{% endif %}>Other</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="address" class="form-label">Address</label>
+                            <textarea class="form-control" id="address" name="address" rows="3">{{ current_user.address or '' }}</textarea>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary">Update Profile</button>
+                    </form>
+                </div>
+
+                <!-- Medical Information Tab -->
+                <div class="tab-pane fade" id="medical" role="tabpanel">
+                    <form method="POST" action="{{ url_for('auth.profile') }}">
+                        <div class="mb-3">
+                            <label for="medical_history" class="form-label">Medical History</label>
+                            <textarea class="form-control" id="medical_history" name="medical_history" rows="4" placeholder="List any previous medical conditions, surgeries, etc.">{{ current_user.medical_history or '' }}</textarea>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="allergies" class="form-label">Allergies</label>
+                            <textarea class="form-control" id="allergies" name="allergies" rows="3" placeholder="List any known allergies">{{ current_user.allergies or '' }}</textarea>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="current_medications" class="form-label">Current Medications</label>
+                            <textarea class="form-control" id="current_medications" name="current_medications" rows="3" placeholder="List medications you are currently taking">{{ current_user.current_medications or '' }}</textarea>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="emergency_contact" class="form-label">Emergency Contact Name</label>
+                                <input type="text" class="form-control" id="emergency_contact" name="emergency_contact" value="{{ current_user.emergency_contact or '' }}">
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="emergency_phone" class="form-label">Emergency Contact Phone</label>
+                                <input type="tel" class="form-control" id="emergency_phone" name="emergency_phone" value="{{ current_user.emergency_phone or '' }}">
+                            </div>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary">Update Medical Information</button>
+                    </form>
+                </div>
+
+                <!-- Change Password Tab -->
+                <div class="tab-pane fade" id="password" role="tabpanel">
+                    <form method="POST" action="{{ url_for('auth.change_password') }}">
+                        <div class="mb-3">
+                            <label for="current_password" class="form-label">Current Password</label>
+                            <input type="password" class="form-control" id="current_password" name="current_password" required>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="new_password" class="form-label">New Password</label>
+                            <input type="password" class="form-control" id="new_password" name="new_password" required>
+                            <div class="form-text">Password must be at least 6 characters long.</div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="confirm_password" class="form-label">Confirm New Password</label>
+                            <input type="password" class="form-control" id="confirm_password" name="confirm_password" required>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary">Change Password</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

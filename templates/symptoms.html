@@ -1,0 +1,549 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Symptoms & Diseases - MRS Health</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
+  </head>
+
+  <style>
+    :root {
+        --primary-purple: #667eea;
+        --secondary-purple: #764ba2;
+        --text-dark: #2D3748;
+    }
+
+    body {
+        background: #000000;
+        font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+        min-height: 100vh;
+        position: relative;
+        overflow-x: hidden;
+    }
+
+    body::before {
+        content: '';
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 200%;
+        height: 200%;
+        background-image:
+            radial-gradient(5px 5px at 20px 30px, #FFD700, transparent),
+            radial-gradient(5px 5px at 60px 70px, #FFD700, transparent),
+            radial-gradient(4px 4px at 50px 50px, #FFD700, transparent),
+            radial-gradient(4px 4px at 130px 80px, #FFD700, transparent),
+            radial-gradient(5px 5px at 90px 10px, #FFD700, transparent),
+            radial-gradient(4px 4px at 160px 120px, #FFD700, transparent),
+            radial-gradient(5px 5px at 200px 40px, #FFD700, transparent),
+            radial-gradient(4px 4px at 170px 90px, #FFD700, transparent),
+            radial-gradient(4px 4px at 240px 60px, #FFD700, transparent),
+            radial-gradient(5px 5px at 280px 100px, #FFD700, transparent),
+            radial-gradient(4px 4px at 310px 20px, #FFD700, transparent),
+            radial-gradient(4px 4px at 350px 110px, #FFD700, transparent),
+            radial-gradient(5px 5px at 380px 50px, #FFD700, transparent),
+            radial-gradient(4px 4px at 420px 80px, #FFD700, transparent);
+        background-size: 450px 150px;
+        background-repeat: repeat;
+        z-index: 0;
+        pointer-events: none;
+        animation: twinkle 3s ease-in-out infinite, moveStars 120s linear infinite;
+    }
+
+    @keyframes twinkle {
+        0%, 100% { opacity: 1; }
+        50% { opacity: 0.5; }
+    }
+
+    @keyframes moveStars {
+        0% {
+            transform: translate(0, 0);
+        }
+        100% {
+            transform: translate(-50%, -50%);
+        }
+    }
+
+    body > * {
+        position: relative;
+        z-index: 1;
+    }
+
+    .navbar {
+        background: transparent !important;
+        box-shadow: none;
+        padding: 0.5rem 0;
+    }
+
+    .navbar-logo {
+        width: 40px;
+        height: 40px;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        border-radius: 50%;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+        margin-right: 10px;
+        animation: heartbeat 1.5s ease-in-out infinite;
+    }
+
+    .navbar-logo i {
+        color: white;
+        font-size: 20px;
+    }
+
+    @keyframes heartbeat {
+        0%, 100% {
+            transform: scale(1);
+        }
+        10% {
+            transform: scale(1.1);
+        }
+        20% {
+            transform: scale(1);
+        }
+        30% {
+            transform: scale(1.1);
+        }
+        40% {
+            transform: scale(1);
+        }
+    }
+
+    .navbar-brand {
+        font-weight: 700;
+        font-size: 1.5rem;
+        color: var(--primary-purple) !important;
+        display: flex;
+        align-items: center;
+    }
+
+    .nav-link {
+        color: var(--text-dark) !important;
+        font-weight: 500;
+        margin: 0 0.5rem;
+        transition: color 0.3s;
+        font-size: 1.1rem;
+        padding: 0.4rem 1rem;
+    }
+
+    .nav-link:hover, .nav-link.active {
+        color: var(--primary-purple) !important;
+    }
+
+    .container {
+        background-color: #FFFFFF;
+        border-radius: 15px;
+        padding: 25px;
+        margin-top: 25px;
+        margin-bottom: 25px;
+        box-shadow: 0 2px 15px rgba(0,0,0,0.08);
+    }
+
+    h2, h3, h4, h5, h6 {
+        color: var(--primary-purple);
+        font-weight: 700;
+    }
+
+    h2 {
+        margin-bottom: 30px;
+        padding-bottom: 20px;
+        border-bottom: 3px solid var(--primary-purple);
+    }
+
+    h3 {
+        margin-top: 20px;
+        margin-bottom: 20px;
+        color: var(--primary-purple);
+    }
+
+    p, li {
+        line-height: 1.8;
+        color: #4A5568;
+    }
+
+    .disease-box {
+        background: linear-gradient(135deg, #f8f9ff 0%, #f0f4ff 100%);
+        border-radius: 15px;
+        padding: 25px;
+        margin-bottom: 25px;
+        border: 1px solid rgba(102, 126, 234, 0.2);
+    }
+
+    .disease-box h3 {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-top: 0;
+    }
+
+    .disease-box h3 i {
+        font-size: 1.5rem;
+    }
+
+    .disease-list {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+        gap: 10px;
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
+
+    .disease-list li {
+        background: white;
+        padding: 12px 15px;
+        border-radius: 8px;
+        border-left: 4px solid var(--primary-purple);
+        box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        transition: all 0.3s ease;
+    }
+
+    .disease-list li:hover {
+        transform: translateX(5px);
+        box-shadow: 0 4px 10px rgba(102, 126, 234, 0.2);
+    }
+
+    .symptom-badge {
+        display: inline-block;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 5px 12px;
+        border-radius: 20px;
+        font-size: 0.85rem;
+        margin: 3px;
+    }
+
+    .symptoms-grid {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        margin-top: 15px;
+    }
+
+    .count-badge {
+        background: var(--primary-purple);
+        color: white;
+        padding: 3px 10px;
+        border-radius: 15px;
+        font-size: 0.9rem;
+        margin-left: 10px;
+    }
+</style>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-light sticky-top">
+        <div class="container">
+            <a class="navbar-brand" href="/">
+                <div class="navbar-logo">
+                    <i class="fas fa-heartbeat"></i>
+                </div>
+                MRS Health
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/about">About</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" aria-current="page" href="/symptoms">Symptoms</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/contact">Contact</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/developer">Developer</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/blog">Blog</a>
+                    </li>
+                </ul>
+                <div class="d-flex">
+                    {% if current_user.is_authenticated %}
+                        <span class="navbar-text me-3">
+                            Welcome, {{ current_user.first_name or current_user.username }}!
+                        </span>
+                        <a href="{{ url_for('multimodal.upload_page') }}" class="btn btn-outline-primary me-2">Consultation</a>
+                        <a href="{{ url_for('auth.logout') }}" class="btn btn-outline-danger">Logout</a>
+                    {% else %}
+                        <a href="{{ url_for('auth.login') }}" class="btn btn-outline-primary me-2">Login</a>
+                        <a href="{{ url_for('auth.register') }}" class="btn btn-outline-success">Register</a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container my-4 mt-4">
+        <h2><i class="fas fa-stethoscope me-2"></i>Symptoms & Diseases</h2>
+        <p>Our AI-powered system can analyze and predict diseases based on two types of input: image analysis for skin conditions and text-based symptom analysis for general diseases.</p>
+
+        <!-- Image-Based Skin Diseases -->
+        <div class="disease-box">
+            <h3><i class="fas fa-camera text-danger"></i> Image-Based Skin Conditions <span class="count-badge">19 conditions</span></h3>
+            <p>Upload an image of your skin condition for AI analysis. Our model can detect the following skin conditions:</p>
+            <ul class="disease-list">
+                <li><i class="fas fa-circle-dot me-2" style="color: #667eea; font-size: 0.6rem;"></i>Acne</li>
+                <li><i class="fas fa-circle-dot me-2" style="color: #667eea; font-size: 0.6rem;"></i>Carcinoma</li>
+                <li><i class="fas fa-circle-dot me-2" style="color: #667eea; font-size: 0.6rem;"></i>Eczema</li>
+                <li><i class="fas fa-circle-dot me-2" style="color: #667eea; font-size: 0.6rem;"></i>Keratosis</li>
+                <li><i class="fas fa-circle-dot me-2" style="color: #667eea; font-size: 0.6rem;"></i>Milia</li>
+                <li><i class="fas fa-circle-dot me-2" style="color: #667eea; font-size: 0.6rem;"></i>Rosacea</li>
+                <li><i class="fas fa-circle-dot me-2" style="color: #667eea; font-size: 0.6rem;"></i>Actinic Keratosis</li>
+                <li><i class="fas fa-circle-dot me-2" style="color: #667eea; font-size: 0.6rem;"></i>Basal Cell Carcinoma</li>
+                <li><i class="fas fa-circle-dot me-2" style="color: #667eea; font-size: 0.6rem;"></i>Squamous Cell Carcinoma</li>
+                <li><i class="fas fa-circle-dot me-2" style="color: #667eea; font-size: 0.6rem;"></i>Melanoma</li>
+                <li><i class="fas fa-circle-dot me-2" style="color: #667eea; font-size: 0.6rem;"></i>Dermatofibroma</li>
+                <li><i class="fas fa-circle-dot me-2" style="color: #667eea; font-size: 0.6rem;"></i>Nevus (Mole)</li>
+                <li><i class="fas fa-circle-dot me-2" style="color: #667eea; font-size: 0.6rem;"></i>Pigmented Benign Keratosis</li>
+                <li><i class="fas fa-circle-dot me-2" style="color: #667eea; font-size: 0.6rem;"></i>Seborrheic Keratosis</li>
+                <li><i class="fas fa-circle-dot me-2" style="color: #667eea; font-size: 0.6rem;"></i>Vascular Lesion</li>
+                <li><i class="fas fa-circle-dot me-2" style="color: #667eea; font-size: 0.6rem;"></i>Benign Keratosis</li>
+                <li><i class="fas fa-circle-dot me-2" style="color: #667eea; font-size: 0.6rem;"></i>Melanocytic Nevus</li>
+                <li><i class="fas fa-circle-dot me-2" style="color: #667eea; font-size: 0.6rem;"></i>Actinic Keratoses</li>
+                <li><i class="fas fa-circle-dot me-2" style="color: #667eea; font-size: 0.6rem;"></i>Vascular Lesions</li>
+            </ul>
+        </div>
+
+        <!-- Text-Based Diseases -->
+        <div class="disease-box">
+            <h3><i class="fas fa-keyboard text-primary"></i> Text-Based Disease Prediction <span class="count-badge">41 diseases</span></h3>
+            <p>Describe your symptoms in text format. Our model can predict the following diseases based on 132 different symptoms:</p>
+            <ul class="disease-list">
+                <li><i class="fas fa-circle-dot me-2" style="color: #764ba2; font-size: 0.6rem;"></i>Fungal Infection</li>
+                <li><i class="fas fa-circle-dot me-2" style="color: #764ba2; font-size: 0.6rem;"></i>Allergy</li>
+                <li><i class="fas fa-circle-dot me-2" style="color: #764ba2; font-size: 0.6rem;"></i>GERD</li>
+                <li><i class="fas fa-circle-dot me-2" style="color: #764ba2; font-size: 0.6rem;"></i>Chronic Cholestasis</li>
+                <li><i class="fas fa-circle-dot me-2" style="color: #764ba2; font-size: 0.6rem;"></i>Drug Reaction</li>
+                <li><i class="fas fa-circle-dot me-2" style="color: #764ba2; font-size: 0.6rem;"></i>Peptic Ulcer Disease</li>
+                <li><i class="fas fa-circle-dot me-2" style="color: #764ba2; font-size: 0.6rem;"></i>AIDS</li>
+                <li><i class="fas fa-circle-dot me-2" style="color: #764ba2; font-size: 0.6rem;"></i>Diabetes</li>
+                <li><i class="fas fa-circle-dot me-2" style="color: #764ba2; font-size: 0.6rem;"></i>Gastroenteritis</li>
+                <li><i class="fas fa-circle-dot me-2" style="color: #764ba2; font-size: 0.6rem;"></i>Bronchial Asthma</li>
+                <li><i class="fas fa-circle-dot me-2" style="color: #764ba2; font-size: 0.6rem;"></i>Hypertension</li>
+                <li><i class="fas fa-circle-dot me-2" style="color: #764ba2; font-size: 0.6rem;"></i>Migraine</li>
+                <li><i class="fas fa-circle-dot me-2" style="color: #764ba2; font-size: 0.6rem;"></i>Cervical Spondylosis</li>
+                <li><i class="fas fa-circle-dot me-2" style="color: #764ba2; font-size: 0.6rem;"></i>Paralysis (Brain Hemorrhage)</li>
+                <li><i class="fas fa-circle-dot me-2" style="color: #764ba2; font-size: 0.6rem;"></i>Jaundice</li>
+                <li><i class="fas fa-circle-dot me-2" style="color: #764ba2; font-size: 0.6rem;"></i>Malaria</li>
+                <li><i class="fas fa-circle-dot me-2" style="color: #764ba2; font-size: 0.6rem;"></i>Chicken Pox</li>
+                <li><i class="fas fa-circle-dot me-2" style="color: #764ba2; font-size: 0.6rem;"></i>Dengue</li>
+                <li><i class="fas fa-circle-dot me-2" style="color: #764ba2; font-size: 0.6rem;"></i>Typhoid</li>
+                <li><i class="fas fa-circle-dot me-2" style="color: #764ba2; font-size: 0.6rem;"></i>Hepatitis A</li>
+                <li><i class="fas fa-circle-dot me-2" style="color: #764ba2; font-size: 0.6rem;"></i>Hepatitis B</li>
+                <li><i class="fas fa-circle-dot me-2" style="color: #764ba2; font-size: 0.6rem;"></i>Hepatitis C</li>
+                <li><i class="fas fa-circle-dot me-2" style="color: #764ba2; font-size: 0.6rem;"></i>Hepatitis D</li>
+                <li><i class="fas fa-circle-dot me-2" style="color: #764ba2; font-size: 0.6rem;"></i>Hepatitis E</li>
+                <li><i class="fas fa-circle-dot me-2" style="color: #764ba2; font-size: 0.6rem;"></i>Alcoholic Hepatitis</li>
+                <li><i class="fas fa-circle-dot me-2" style="color: #764ba2; font-size: 0.6rem;"></i>Tuberculosis</li>
+                <li><i class="fas fa-circle-dot me-2" style="color: #764ba2; font-size: 0.6rem;"></i>Common Cold</li>
+                <li><i class="fas fa-circle-dot me-2" style="color: #764ba2; font-size: 0.6rem;"></i>Pneumonia</li>
+                <li><i class="fas fa-circle-dot me-2" style="color: #764ba2; font-size: 0.6rem;"></i>Hemorrhoids (Piles)</li>
+                <li><i class="fas fa-circle-dot me-2" style="color: #764ba2; font-size: 0.6rem;"></i>Heart Attack</li>
+                <li><i class="fas fa-circle-dot me-2" style="color: #764ba2; font-size: 0.6rem;"></i>Varicose Veins</li>
+                <li><i class="fas fa-circle-dot me-2" style="color: #764ba2; font-size: 0.6rem;"></i>Hypothyroidism</li>
+                <li><i class="fas fa-circle-dot me-2" style="color: #764ba2; font-size: 0.6rem;"></i>Hyperthyroidism</li>
+                <li><i class="fas fa-circle-dot me-2" style="color: #764ba2; font-size: 0.6rem;"></i>Hypoglycemia</li>
+                <li><i class="fas fa-circle-dot me-2" style="color: #764ba2; font-size: 0.6rem;"></i>Osteoarthritis</li>
+                <li><i class="fas fa-circle-dot me-2" style="color: #764ba2; font-size: 0.6rem;"></i>Arthritis</li>
+                <li><i class="fas fa-circle-dot me-2" style="color: #764ba2; font-size: 0.6rem;"></i>Vertigo</li>
+                <li><i class="fas fa-circle-dot me-2" style="color: #764ba2; font-size: 0.6rem;"></i>Acne</li>
+                <li><i class="fas fa-circle-dot me-2" style="color: #764ba2; font-size: 0.6rem;"></i>Urinary Tract Infection</li>
+                <li><i class="fas fa-circle-dot me-2" style="color: #764ba2; font-size: 0.6rem;"></i>Psoriasis</li>
+                <li><i class="fas fa-circle-dot me-2" style="color: #764ba2; font-size: 0.6rem;"></i>Impetigo</li>
+            </ul>
+
+            <h4 class="mt-4"><i class="fas fa-list-check me-2"></i>Supported Symptoms (132 total)</h4>
+            <p>The following symptoms can be used for text-based analysis:</p>
+            <div class="symptoms-grid" id="symptomsGrid">
+                <span class="symptom-badge">Itching</span>
+                <span class="symptom-badge">Skin Rash</span>
+                <span class="symptom-badge">Continuous Sneezing</span>
+                <span class="symptom-badge">Shivering</span>
+                <span class="symptom-badge">Chills</span>
+                <span class="symptom-badge">Joint Pain</span>
+                <span class="symptom-badge">Stomach Pain</span>
+                <span class="symptom-badge">Acidity</span>
+                <span class="symptom-badge">Vomiting</span>
+                <span class="symptom-badge">Fatigue</span>
+                <span class="symptom-badge">Weight Gain</span>
+                <span class="symptom-badge">Anxiety</span>
+                <span class="symptom-badge">Mood Swings</span>
+                <span class="symptom-badge">Weight Loss</span>
+                <span class="symptom-badge">Restlessness</span>
+                <span class="symptom-badge">Lethargy</span>
+                <span class="symptom-badge">Cough</span>
+                <span class="symptom-badge">High Fever</span>
+                <span class="symptom-badge">Breathlessness</span>
+                <span class="symptom-badge">Sweating</span>
+                <span class="symptom-badge">Dehydration</span>
+                <span class="symptom-badge">Indigestion</span>
+                <span class="symptom-badge">Headache</span>
+                <span class="symptom-badge">Nausea</span>
+                <span class="symptom-badge">Loss of Appetite</span>
+                <span class="symptom-badge">Back Pain</span>
+                <span class="symptom-badge">Constipation</span>
+                <span class="symptom-badge">Abdominal Pain</span>
+                <span class="symptom-badge">Diarrhoea</span>
+                <span class="symptom-badge">Mild Fever</span>
+                <span class="symptom-badge">Chest Pain</span>
+                <span class="symptom-badge">Dizziness</span>
+                <span class="symptom-badge">Muscle Pain</span>
+                <span class="symptom-badge">Neck Pain</span>
+                <span class="symptom-badge">Knee Pain</span>
+                <span class="symptom-badge">Hip Joint Pain</span>
+                <span class="symptom-badge">Muscle Weakness</span>
+                <span class="symptom-badge">Depression</span>
+                <span class="symptom-badge">Irritability</span>
+                <span class="symptom-badge show-more-btn" id="showMoreBtn" onclick="showAllSymptoms()" style="cursor: pointer; background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);">
+                    <i class="fas fa-plus-circle me-1"></i>And 92 more...
+                </span>
+            </div>
+            <!-- Hidden symptoms that will be shown on click -->
+            <div class="symptoms-grid mt-2" id="moreSymptoms" style="display: none;">
+                <span class="symptom-badge">Nodal Skin Eruptions</span>
+                <span class="symptom-badge">Ulcers on Tongue</span>
+                <span class="symptom-badge">Muscle Wasting</span>
+                <span class="symptom-badge">Burning Micturition</span>
+                <span class="symptom-badge">Spotting Urination</span>
+                <span class="symptom-badge">Cold Hands and Feet</span>
+                <span class="symptom-badge">Patches in Throat</span>
+                <span class="symptom-badge">Irregular Sugar Level</span>
+                <span class="symptom-badge">Sunken Eyes</span>
+                <span class="symptom-badge">Yellowish Skin</span>
+                <span class="symptom-badge">Dark Urine</span>
+                <span class="symptom-badge">Pain Behind Eyes</span>
+                <span class="symptom-badge">Yellow Urine</span>
+                <span class="symptom-badge">Yellowing of Eyes</span>
+                <span class="symptom-badge">Acute Liver Failure</span>
+                <span class="symptom-badge">Fluid Overload</span>
+                <span class="symptom-badge">Swelling of Stomach</span>
+                <span class="symptom-badge">Swelled Lymph Nodes</span>
+                <span class="symptom-badge">Malaise</span>
+                <span class="symptom-badge">Blurred Vision</span>
+                <span class="symptom-badge">Phlegm</span>
+                <span class="symptom-badge">Throat Irritation</span>
+                <span class="symptom-badge">Redness of Eyes</span>
+                <span class="symptom-badge">Sinus Pressure</span>
+                <span class="symptom-badge">Runny Nose</span>
+                <span class="symptom-badge">Congestion</span>
+                <span class="symptom-badge">Weakness in Limbs</span>
+                <span class="symptom-badge">Fast Heart Rate</span>
+                <span class="symptom-badge">Pain During Bowel Movements</span>
+                <span class="symptom-badge">Pain in Anal Region</span>
+                <span class="symptom-badge">Bloody Stool</span>
+                <span class="symptom-badge">Irritation in Anus</span>
+                <span class="symptom-badge">Cramps</span>
+                <span class="symptom-badge">Bruising</span>
+                <span class="symptom-badge">Obesity</span>
+                <span class="symptom-badge">Swollen Legs</span>
+                <span class="symptom-badge">Swollen Blood Vessels</span>
+                <span class="symptom-badge">Puffy Face and Eyes</span>
+                <span class="symptom-badge">Enlarged Thyroid</span>
+                <span class="symptom-badge">Brittle Nails</span>
+                <span class="symptom-badge">Swollen Extremities</span>
+                <span class="symptom-badge">Excessive Hunger</span>
+                <span class="symptom-badge">Drying and Tingling Lips</span>
+                <span class="symptom-badge">Slurred Speech</span>
+                <span class="symptom-badge">Stiff Neck</span>
+                <span class="symptom-badge">Swelling Joints</span>
+                <span class="symptom-badge">Movement Stiffness</span>
+                <span class="symptom-badge">Spinning Movements</span>
+                <span class="symptom-badge">Loss of Balance</span>
+                <span class="symptom-badge">Unsteadiness</span>
+                <span class="symptom-badge">Weakness of One Body Side</span>
+                <span class="symptom-badge">Loss of Smell</span>
+                <span class="symptom-badge">Bladder Discomfort</span>
+                <span class="symptom-badge">Foul Smell of Urine</span>
+                <span class="symptom-badge">Continuous Feel of Urine</span>
+                <span class="symptom-badge">Passage of Gases</span>
+                <span class="symptom-badge">Internal Itching</span>
+                <span class="symptom-badge">Toxic Look</span>
+                <span class="symptom-badge">Red Spots Over Body</span>
+                <span class="symptom-badge">Belly Pain</span>
+                <span class="symptom-badge">Abnormal Menstruation</span>
+                <span class="symptom-badge">Dischromic Patches</span>
+                <span class="symptom-badge">Watering from Eyes</span>
+                <span class="symptom-badge">Increased Appetite</span>
+                <span class="symptom-badge">Polyuria</span>
+                <span class="symptom-badge">Family History</span>
+                <span class="symptom-badge">Mucoid Sputum</span>
+                <span class="symptom-badge">Rusty Sputum</span>
+                <span class="symptom-badge">Lack of Concentration</span>
+                <span class="symptom-badge">Visual Disturbances</span>
+                <span class="symptom-badge">Receiving Blood Transfusion</span>
+                <span class="symptom-badge">Receiving Unsterile Injections</span>
+                <span class="symptom-badge">Coma</span>
+                <span class="symptom-badge">Stomach Bleeding</span>
+                <span class="symptom-badge">Distention of Abdomen</span>
+                <span class="symptom-badge">History of Alcohol Consumption</span>
+                <span class="symptom-badge">Blood in Sputum</span>
+                <span class="symptom-badge">Prominent Veins on Calf</span>
+                <span class="symptom-badge">Palpitations</span>
+                <span class="symptom-badge">Painful Walking</span>
+                <span class="symptom-badge">Pus Filled Pimples</span>
+                <span class="symptom-badge">Blackheads</span>
+                <span class="symptom-badge">Scarring</span>
+                <span class="symptom-badge">Skin Peeling</span>
+                <span class="symptom-badge">Silver Like Dusting</span>
+                <span class="symptom-badge">Small Dents in Nails</span>
+                <span class="symptom-badge">Inflammatory Nails</span>
+                <span class="symptom-badge">Blister</span>
+                <span class="symptom-badge">Red Sore Around Nose</span>
+                <span class="symptom-badge">Yellow Crust Ooze</span>
+                <span class="symptom-badge">Altered Sensorium</span>
+                <span class="symptom-badge">Extra Marital Contacts</span>
+                <span class="symptom-badge show-less-btn" onclick="hideSymptoms()" style="cursor: pointer; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+                    <i class="fas fa-minus-circle me-1"></i>Show Less
+                </span>
+            </div>
+        </div>
+
+        <!-- How to Use -->
+        <div class="disease-box" style="background: linear-gradient(135deg, #e8f5e9 0%, #f1f8e9 100%); border-color: rgba(76, 175, 80, 0.2);">
+            <h3 style="color: #2e7d32;"><i class="fas fa-info-circle"></i> How to Use</h3>
+            <ol style="color: #4A5568;">
+                <li><strong>Register/Login</strong> to access the consultation feature</li>
+                <li>Go to the <strong>Consultation</strong> page</li>
+                <li>For skin conditions: <strong>Upload an image</strong> of the affected area</li>
+                <li>For general diseases: <strong>Type your symptoms</strong> in the text box</li>
+                <li>Click <strong>Analyze</strong> to get AI-powered predictions and recommendations</li>
+            </ol>
+            <div class="text-center mt-4">
+                {% if current_user.is_authenticated %}
+                    <a href="{{ url_for('multimodal.upload_page') }}" class="btn btn-success btn-lg">
+                        <i class="fas fa-stethoscope me-2"></i>Start Consultation
+                    </a>
+                {% else %}
+                    <a href="{{ url_for('auth.register') }}" class="btn btn-success btn-lg">
+                        <i class="fas fa-user-plus me-2"></i>Register to Get Started
+                    </a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm" crossorigin="anonymous"></script>
+    <script>
+        function showAllSymptoms() {
+            document.getElementById('moreSymptoms').style.display = 'flex';
+            document.getElementById('showMoreBtn').style.display = 'none';
+        }
+
+        function hideSymptoms() {
+            document.getElementById('moreSymptoms').style.display = 'none';
+            document.getElementById('showMoreBtn').style.display = 'inline-block';
+        }
+    </script>
+  </body>
+</html>

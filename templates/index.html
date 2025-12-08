@@ -1,0 +1,498 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Online Healthcare Centre</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
+  </head>
+
+  <style>
+        body {
+            background-image: url('/static/brain_background.jpg');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            background-repeat: no-repeat;
+            min-height: 100vh;
+        }
+
+        .logo {
+            width: 50px;
+            height: 50px;
+            color: black;
+            margin-top: 0;
+            margin-left: 2px;
+        }
+
+        .myimg {
+            width: 50px;
+            height: 50px;
+            border: 2px solid black;
+            border-radius: 25px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <div class="container-fluid">
+            <!-- Logo at the top-left corner -->
+            <div class="logo">
+                <img class="myimg" src="{{ url_for('static', filename='health-medical-insurance-digital-technology-600nw-2213344667.webp') }}" alt="">
+            </div>
+
+            <a class="navbar-brand text-dark fw-bold" href="#">Online Healthcare Centre</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    <li class="nav-item">
+                        <a class="nav-link active text-dark" aria-current="page" href="/">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-dark" href="/about">About</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-dark" href="/contact">Contact</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-dark" href="/developer">Developer</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-dark" href="/blog">Blog</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-primary fw-bold" href="/image/upload_page">
+                            <i class="fas fa-image"></i> Image Analysis
+                        </a>
+                    </li>
+                    {% if current_user.is_authenticated %}
+                    <li class="nav-item">
+                        <a class="nav-link text-dark" href="{{ url_for('dashboard') }}">Dashboard</a>
+                    </li>
+                    {% endif %}
+                </ul>
+                <div class="d-flex">
+                    {% if current_user.is_authenticated %}
+                        <span class="navbar-text me-3 text-dark">
+                            Welcome, {{ current_user.first_name }}!
+                        </span>
+                        <a href="{{ url_for('auth.profile') }}" class="btn btn-outline-primary me-2">Profile</a>
+                        <a href="{{ url_for('auth.logout') }}" class="btn btn-outline-danger">Logout</a>
+                    {% else %}
+                        <a href="{{ url_for('auth.login') }}" class="btn btn-outline-primary me-2">Login</a>
+                        <a href="{{ url_for('auth.register') }}" class="btn btn-outline-success">Register</a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </nav>
+
+
+
+
+<!-- main form of page -->
+<h1 class="mt-4 my-4 text-start text-white">Online Healthcare Centre</h1>
+<div class="container my-4 mt-4" style="background: rgba(255, 255, 255, 0.5); color: white; border-radius: 15px; padding: 40px;">
+    <form action="/predict" method="post">
+        <div class="form-group">
+            <label for="symptoms">Select Symptoms:</label>
+
+            <!-- Voice Mode Toggle -->
+            <div class="mb-3">
+                <button type="button" id="voiceModeToggle" class="btn btn-success">
+                    <i class="fas fa-robot"></i> <span id="voiceModeText">Enable Voice Mode</span>
+                </button>
+                <small class="text-white-50 ms-2">
+                    <i class="fas fa-info-circle"></i> Voice Mode: Speak → Auto-analyze → Hear results (no buttons needed!)
+                </small>
+            </div>
+
+            <div class="input-group">
+                <input type="text" class="form-control" id="symptoms" name="symptoms" placeholder="Type symptoms OR click microphone to speak">
+                <button type="button" id="voiceButton" class="btn btn-primary" title="Click to speak">
+                    <i class="fas fa-microphone"></i> <span id="voiceButtonText">Speak</span>
+                </button>
+            </div>
+            <small class="form-text text-white-50">
+                <i class="fas fa-info-circle"></i> You can type symptoms separated by commas, or click the microphone to speak
+            </small>
+        </div>
+
+        <!-- Voice Status -->
+        <div id="voiceStatus" class="alert alert-info" style="display: none; margin-top: 15px;">
+            <i class="fas fa-microphone-alt"></i> <span id="voiceStatusText">Listening...</span>
+        </div>
+
+        <!-- Transcription Preview -->
+        <div id="transcriptionPreview" style="display: none; margin-top: 15px; padding: 10px; background: rgba(255,255,255,0.2); border-radius: 10px; color: white;">
+            <small><strong>Recognized:</strong></small>
+            <div id="transcription"></div>
+        </div>
+
+        {% if message %}
+        <div class="alert alert-warning alert-dismissible fade show" role="alert">
+            <strong>Notice:</strong> {{ message }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+        {% endif %}
+        <br>
+
+        <button type="submit" class="btn btn-danger btn-lg" style="width: 100%; padding: 14px; margin-bottom: 5px;">Predict</button>
+    </form>
+</div>
+
+
+
+
+
+
+
+
+{% if predicted_disease %}
+
+<!-- Results -->
+<h1 class="text-start my-4 mt-4 text-white">Our AI System Results</h1>
+<div class="container">
+    <div class="row">
+        <div class="col-12">
+            <!-- Disease -->
+            <div class="card mb-4">
+                <div class="card-header" style="background-color: #F39334; color: white;">
+                    <h4 class="card-title mb-0">Predicted Disease</h4>
+                </div>
+                <div class="card-body">
+                    <h3>{{ predicted_disease }}</h3>
+                </div>
+            </div>
+
+            <!-- Description -->
+            <div class="card mb-4">
+                <div class="card-header" style="background-color: #268AF3; color: white;">
+                    <h4 class="card-title mb-0">Description</h4>
+                </div>
+                <div class="card-body">
+                    <p>{{ dis_des }}</p>
+                </div>
+            </div>
+
+            <!-- Precautions -->
+            <div class="card mb-4">
+                <div class="card-header" style="background-color: #F371F9; color: white;">
+                    <h4 class="card-title mb-0">Precautions</h4>
+                </div>
+                <div class="card-body">
+                    <ul>
+                        {% for i in my_precautions %}
+                            <li>{{ i }}</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Medications -->
+            <div class="card mb-4">
+                <div class="card-header" style="background-color: #F8576F; color: white;">
+                    <h4 class="card-title mb-0">Medications</h4>
+                </div>
+                <div class="card-body">
+                    <ul>
+                        {% for i in medications %}
+                            <li>{{ i }}</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Workouts -->
+            <div class="card mb-4">
+                <div class="card-header" style="background-color: #99F741; color: white;">
+                    <h4 class="card-title mb-0">Workouts</h4>
+                </div>
+                <div class="card-body">
+                    <ul>
+                        {% for i in workout %}
+                            <li>{{ i }}</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Diets -->
+            <div class="card mb-4">
+                <div class="card-header" style="background-color: #E5E23D; color: black;">
+                    <h4 class="card-title mb-0">Diets</h4>
+                </div>
+                <div class="card-body">
+                    <ul>
+                        {% for i in my_diet %}
+                            <li>{{ i }}</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endif %}
+
+
+
+
+        <script src="{{ url_for('static', filename='js/voice_assistant.js') }}"></script>
+        <script>
+    // Initialize Voice Assistant
+    const voiceAssistant = new VoiceAssistant({
+        language: 'en-US',
+        continuous: false,
+        interimResults: true
+    });
+
+    // Get DOM elements
+    const voiceButton = document.getElementById('voiceButton');
+    const voiceButtonText = document.getElementById('voiceButtonText');
+    const voiceStatus = document.getElementById('voiceStatus');
+    const voiceStatusText = document.getElementById('voiceStatusText');
+    const transcriptionPreview = document.getElementById('transcriptionPreview');
+    const transcriptionDiv = document.getElementById('transcription');
+    const symptomsInput = document.getElementById('symptoms');
+    const voiceModeToggle = document.getElementById('voiceModeToggle');
+    const voiceModeText = document.getElementById('voiceModeText');
+    const form = document.querySelector('form');
+
+    // Voice Mode state
+    let voiceModeEnabled = false;
+    let isProcessingPrediction = false;
+
+    // Voice Mode Toggle
+    voiceModeToggle.addEventListener('click', function() {
+        voiceModeEnabled = !voiceModeEnabled;
+
+        if (voiceModeEnabled) {
+            voiceModeToggle.classList.remove('btn-success');
+            voiceModeToggle.classList.add('btn-warning');
+            voiceModeText.textContent = 'Voice Mode: ON';
+            voiceStatusText.textContent = 'Voice Mode Active - Speak your symptoms...';
+            voiceStatus.style.display = 'block';
+
+            // Auto-start listening
+            setTimeout(() => {
+                voiceAssistant.start();
+            }, 500);
+        } else {
+            voiceModeToggle.classList.remove('btn-warning');
+            voiceModeToggle.classList.add('btn-success');
+            voiceModeText.textContent = 'Enable Voice Mode';
+            voiceStatus.style.display = 'none';
+
+            // Stop listening if active
+            if (voiceAssistant.isListening) {
+                voiceAssistant.stop();
+            }
+        }
+    });
+
+    // Voice Assistant callbacks
+    voiceAssistant.onStart = function() {
+        voiceButton.classList.add('btn-danger');
+        voiceButton.classList.remove('btn-primary');
+        voiceButtonText.textContent = 'Listening...';
+        voiceStatus.style.display = 'block';
+
+        if (voiceModeEnabled) {
+            voiceStatusText.textContent = 'Voice Mode: Listening... Speak your symptoms';
+        } else {
+            voiceStatusText.textContent = 'Listening... Speak now';
+        }
+    };
+
+    voiceAssistant.onResult = function(result) {
+        // Show interim results
+        transcriptionDiv.textContent = result.transcript;
+        transcriptionPreview.style.display = 'block';
+
+        // Update input field with final transcript
+        if (result.isFinal) {
+            symptomsInput.value = result.finalTranscript.trim();
+        }
+    };
+
+    voiceAssistant.onEnd = function() {
+        voiceButton.classList.remove('btn-danger');
+        voiceButton.classList.add('btn-primary');
+        voiceButtonText.textContent = 'Speak';
+
+        // Auto-submit in Voice Mode
+        if (voiceModeEnabled && symptomsInput.value.trim() !== '' && !isProcessingPrediction) {
+            voiceStatusText.textContent = 'Voice Mode: Processing your symptoms...';
+            isProcessingPrediction = true;
+
+            // Submit form via AJAX
+            setTimeout(() => {
+                submitPrediction();
+            }, 1000);
+        } else if (!voiceModeEnabled) {
+            voiceStatus.style.display = 'none';
+            // Keep transcription visible for 3 seconds
+            setTimeout(() => {
+                transcriptionPreview.style.display = 'none';
+            }, 3000);
+        }
+    };
+
+    voiceAssistant.onError = function(error) {
+        voiceButton.classList.remove('btn-danger');
+        voiceButton.classList.add('btn-primary');
+        voiceButtonText.textContent = 'Speak';
+
+        if (!voiceModeEnabled) {
+            voiceStatus.style.display = 'none';
+        }
+
+        alert('Voice Error: ' + error.message);
+
+        // Restart listening in Voice Mode after error
+        if (voiceModeEnabled && !isProcessingPrediction) {
+            setTimeout(() => {
+                voiceAssistant.start();
+            }, 2000);
+        }
+    };
+
+    // Voice button click handler (manual mode)
+    voiceButton.addEventListener('click', function() {
+        if (voiceAssistant.isListening) {
+            voiceAssistant.stop();
+        } else {
+            voiceAssistant.start();
+        }
+    });
+
+    // Submit prediction via AJAX
+    async function submitPrediction() {
+        const symptoms = symptomsInput.value.trim();
+
+        if (!symptoms) {
+            alert('Please enter symptoms');
+            isProcessingPrediction = false;
+            if (voiceModeEnabled) {
+                voiceAssistant.start();
+            }
+            return;
+        }
+
+        try {
+            const formData = new FormData();
+            formData.append('symptoms', symptoms);
+
+            const response = await fetch('/predict', {
+                method: 'POST',
+                body: formData
+            });
+
+            if (response.ok) {
+                const html = await response.text();
+
+                // Extract prediction from HTML
+                const parser = new DOMParser();
+                const doc = parser.parseFromString(html, 'text/html');
+                const diseaseElement = doc.querySelector('.card-body h3');
+                const descriptionElement = doc.querySelector('.card-body p');
+
+                if (diseaseElement) {
+                    const disease = diseaseElement.textContent.trim();
+                    const description = descriptionElement ? descriptionElement.textContent.trim() : '';
+
+                    // Show results
+                    if (voiceModeEnabled) {
+                        voiceStatusText.textContent = 'Voice Mode: ' + disease;
+
+                        // Auto-speak results
+                        const resultText = `You may have ${disease}. ${description.substring(0, 200)}`;
+                        speakResponse(resultText);
+
+                        // Restart listening after speaking
+                        setTimeout(() => {
+                            isProcessingPrediction = false;
+                            transcriptionPreview.style.display = 'none';
+                            symptomsInput.value = '';
+                            voiceAssistant.start();
+                        }, resultText.length * 50); // Rough estimate of speech duration
+                    } else {
+                        // Reload page to show full results
+                        window.location.reload();
+                    }
+                } else {
+                    alert('Could not parse prediction results');
+                    isProcessingPrediction = false;
+                    if (voiceModeEnabled) {
+                        voiceAssistant.start();
+                    }
+                }
+            } else {
+                alert('Prediction failed. Please try again.');
+                isProcessingPrediction = false;
+                if (voiceModeEnabled) {
+                    voiceAssistant.start();
+                }
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            alert('Error: ' + error.message);
+            isProcessingPrediction = false;
+            if (voiceModeEnabled) {
+                voiceAssistant.start();
+            }
+        }
+    }
+
+    // Text-to-Speech for AI responses (S2S feature)
+    function speakResponse(text) {
+        if ('speechSynthesis' in window) {
+            // Cancel any ongoing speech
+            window.speechSynthesis.cancel();
+
+            const utterance = new SpeechSynthesisUtterance(text);
+            utterance.lang = 'en-US';
+            utterance.rate = 0.9;
+            utterance.pitch = 1.0;
+            utterance.volume = 1.0;
+
+            window.speechSynthesis.speak(utterance);
+        } else {
+            console.warn('Text-to-Speech not supported in this browser');
+        }
+    }
+
+    // Auto-speak prediction results when available
+    {% if predicted_disease %}
+    window.addEventListener('DOMContentLoaded', function() {
+        const diseaseText = `You may have {{ predicted_disease }}. {{ dis_des[:200] }}`;
+
+        // Add a speak button for results
+        const resultsSection = document.querySelector('.container');
+        if (resultsSection) {
+            const speakButton = document.createElement('button');
+            speakButton.className = 'btn btn-info mt-3';
+            speakButton.innerHTML = '<i class="fas fa-volume-up"></i> Hear Results';
+            speakButton.onclick = function() {
+                speakResponse(diseaseText);
+            };
+
+            // Insert speak button after the first result card
+            const firstCard = document.querySelector('.card');
+            if (firstCard) {
+                firstCard.parentNode.insertBefore(speakButton, firstCard.nextSibling);
+            }
+        }
+    });
+    {% endif %}
+</script>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm" crossorigin="anonymous"></script>
+</body>
+
+</html>

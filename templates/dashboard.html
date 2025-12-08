@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - MRS Health</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-purple: #667eea;
+            --secondary-purple: #764ba2;
+            --text-dark: #2D3748;
+        }
+
+        body {
+            background: #000000;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            min-height: 100vh;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 200%;
+            height: 200%;
+            background-image:
+                radial-gradient(5px 5px at 20px 30px, #FFD700, transparent),
+                radial-gradient(5px 5px at 60px 70px, #FFD700, transparent),
+                radial-gradient(4px 4px at 50px 50px, #FFD700, transparent),
+                radial-gradient(4px 4px at 130px 80px, #FFD700, transparent),
+                radial-gradient(5px 5px at 90px 10px, #FFD700, transparent),
+                radial-gradient(4px 4px at 160px 120px, #FFD700, transparent),
+                radial-gradient(5px 5px at 200px 40px, #FFD700, transparent),
+                radial-gradient(4px 4px at 170px 90px, #FFD700, transparent),
+                radial-gradient(4px 4px at 240px 60px, #FFD700, transparent),
+                radial-gradient(5px 5px at 280px 100px, #FFD700, transparent),
+                radial-gradient(4px 4px at 310px 20px, #FFD700, transparent),
+                radial-gradient(4px 4px at 350px 110px, #FFD700, transparent),
+                radial-gradient(5px 5px at 380px 50px, #FFD700, transparent),
+                radial-gradient(4px 4px at 420px 80px, #FFD700, transparent);
+            background-size: 450px 150px;
+            background-repeat: repeat;
+            z-index: 0;
+            pointer-events: none;
+            animation: twinkle 3s ease-in-out infinite, moveStars 120s linear infinite;
+        }
+
+        @keyframes twinkle {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        @keyframes moveStars {
+            0% {
+                transform: translate(0, 0);
+            }
+            100% {
+                transform: translate(-50%, -50%);
+            }
+        }
+
+        body > * {
+            position: relative;
+            z-index: 1;
+        }
+
+        .navbar {
+            background: #E0F2F1 !important;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            padding: 1rem 0;
+        }
+
+        .navbar-logo {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+            margin-right: 10px;
+            animation: heartbeat 1.5s ease-in-out infinite;
+        }
+
+        .navbar-logo i {
+            color: white;
+            font-size: 20px;
+        }
+
+        @keyframes heartbeat {
+            0%, 100% {
+                transform: scale(1);
+            }
+            10% {
+                transform: scale(1.1);
+            }
+            20% {
+                transform: scale(1);
+            }
+            30% {
+                transform: scale(1.1);
+            }
+            40% {
+                transform: scale(1);
+            }
+        }
+
+        .navbar-brand {
+            font-weight: 700;
+            font-size: 1.5rem;
+            color: var(--primary-purple) !important;
+            display: flex;
+            align-items: center;
+        }
+
+        .nav-link {
+            color: var(--text-dark) !important;
+            font-weight: 500;
+            margin: 0 0.5rem;
+            transition: color 0.3s;
+        }
+
+        .nav-link:hover {
+            color: var(--primary-purple) !important;
+        }
+
+        .dashboard-container {
+            max-width: 1200px;
+            margin: 3rem auto;
+            padding: 0 1rem;
+        }
+
+        .dashboard-header {
+            background: white;
+            border-radius: 16px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 2px 15px rgba(0,0,0,0.08);
+        }
+
+        .dashboard-title {
+            font-size: 2rem;
+            font-weight: 800;
+            color: var(--primary-purple);
+            margin-bottom: 0.5rem;
+        }
+
+        .dashboard-subtitle {
+            color: #64748B;
+            font-size: 1rem;
+        }
+
+        .history-card {
+            background: white;
+            border-radius: 16px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.06);
+            transition: all 0.3s;
+            border-left: 4px solid var(--primary-purple);
+        }
+
+        .history-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.12);
+        }
+
+        .history-date {
+            color: #64748B;
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .history-disease {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: var(--primary-purple);
+            margin-bottom: 0.5rem;
+        }
+
+        .history-details {
+            color: #475569;
+            line-height: 1.6;
+        }
+
+        .empty-state {
+            background: white;
+            border-radius: 16px;
+            padding: 4rem 2rem;
+            text-align: center;
+            box-shadow: 0 2px 15px rgba(0,0,0,0.08);
+        }
+
+        .empty-state-icon {
+            font-size: 4rem;
+            color: #CBD5E1;
+            margin-bottom: 1rem;
+        }
+
+        .empty-state-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--text-dark);
+            margin-bottom: 0.5rem;
+        }
+
+        .empty-state-text {
+            color: #64748B;
+            margin-bottom: 2rem;
+        }
+
+        .btn-consultation {
+            background: linear-gradient(135deg, var(--primary-purple) 0%, #6D28D9 100%);
+            color: white;
+            padding: 0.75rem 2rem;
+            border-radius: 12px;
+            font-weight: 600;
+            border: none;
+            transition: all 0.3s;
+        }
+
+        .btn-consultation:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(124, 58, 237, 0.3);
+            color: white;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-light sticky-top">
+        <div class="container">
+            <a class="navbar-brand" href="/">
+                <div class="navbar-logo">
+                    <i class="fas fa-heartbeat"></i>
+                </div>
+                MRS Health
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto align-items-center">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/about">About</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/symptoms">Symptoms</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/contact">Contact</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('multimodal.upload_page') }}">Consultation</a>
+                    </li>
+                    <li class="nav-item ms-3">
+                        {% if current_user.is_authenticated %}
+                            <a href="{{ url_for('auth.logout') }}" class="btn btn-outline-danger">Logout</a>
+                        {% else %}
+                            <a href="{{ url_for('auth.login') }}" class="btn btn-outline-primary">Login</a>
+                        {% endif %}
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Dashboard Content -->
+    <div class="dashboard-container">
+        <div class="dashboard-header">
+            <h1 class="dashboard-title">
+                <i class="fas fa-chart-line me-2"></i>
+                My Dashboard
+            </h1>
+            <p class="dashboard-subtitle">View your consultation history and past diagnoses</p>
+        </div>
+
+        {% if predictions and predictions|length > 0 %}
+            <h3 class="mb-3" style="color: #FFFFFF; font-weight: 700;">
+                <i class="fas fa-history me-2"></i>
+                Consultation History
+            </h3>
+
+            {% for prediction in predictions %}
+            <div class="history-card">
+                <div class="history-date">
+                    <i class="far fa-calendar-alt me-1"></i>
+                    {{ prediction['created_at'].strftime('%B %d, %Y at %I:%M %p') }}
+                    {% if prediction.get('type') == 'multimodal' %}
+                        <span class="badge bg-primary ms-2">
+                            <i class="fas fa-image me-1"></i> Image Analysis
+                        </span>
+                    {% endif %}
+                    {% if prediction.get('confidence') %}
+                        <span class="badge bg-success ms-2">
+                            {{ "%.1f" | format(prediction['confidence'] * 100) }}% Confidence
+                        </span>
+                    {% endif %}
+                </div>
+                <div class="history-disease">
+                    <i class="fas fa-stethoscope me-2"></i>
+                    {{ prediction['predicted_disease'] }}
+                </div>
+                {% if prediction.get('symptoms') %}
+                <div class="history-details">
+                    <strong>Symptoms:</strong> {{ prediction['symptoms'] }}
+                </div>
+                {% endif %}
+                {% if prediction.get('description') %}
+                <div class="history-details mt-2">
+                    <strong>Description:</strong> {{ prediction['description'] }}
+                </div>
+                {% endif %}
+            </div>
+            {% endfor %}
+        {% else %}
+            <div class="empty-state">
+                <div class="empty-state-icon">
+                    <i class="fas fa-clipboard-list"></i>
+                </div>
+                <h2 class="empty-state-title">No Consultation History Yet</h2>
+                <p class="empty-state-text">
+                    You haven't made any consultations yet. Start your first consultation to see your history here.
+                </p>
+                <a href="{{ url_for('multimodal.upload_page') }}" class="btn btn-consultation">
+                    Start Consultation
+                    <i class="fas fa-arrow-right ms-2"></i>
+                </a>
+            </div>
+        {% endif %}
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
