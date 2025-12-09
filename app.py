@@ -45,10 +45,25 @@ os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
 # Initialize database
 db.init_app(app)
 
-# Create database tables
-with app.app_context():
+# Create database tables - must happen before first request
+def create_tables():
     db.create_all()
-    print("Database tables created/verified!")
+    print("✅ Database tables created/verified!")
+
+with app.app_context():
+    try:
+        create_tables()
+    except Exception as e:
+        print(f"❌ Database error: {e}")
+
+# Also ensure tables exist on first request (backup)
+@app.before_request
+def ensure_tables():
+    app.before_request_funcs[None].remove(ensure_tables)
+    try:
+        db.create_all()
+    except:
+        pass
 
 # Initialize Flask-Login
 login_manager = LoginManager()
