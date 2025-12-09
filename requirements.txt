@@ -36,8 +36,7 @@ torchvision==0.16.1
 torchaudio==2.1.1
 
 # TensorFlow (for image classification)
-tensorflow==2.15.0
-keras>=3.0.0
+tensorflow>=2.16.0
 huggingface_hub==0.20.0
 
 # Cloud Storage
