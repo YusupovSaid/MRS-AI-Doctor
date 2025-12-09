@@ -37,6 +37,7 @@ torchaudio==2.1.1
 
 # TensorFlow (for image classification)
 tensorflow==2.15.0
+huggingface_hub==0.20.0
 
 # Cloud Storage
 # AWS S3
