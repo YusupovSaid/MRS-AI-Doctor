@@ -45,6 +45,11 @@ os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
 # Initialize database
 db.init_app(app)
 
+# Create database tables
+with app.app_context():
+    db.create_all()
+    print("Database tables created/verified!")
+
 # Initialize Flask-Login
 login_manager = LoginManager()
 login_manager.init_app(app)
