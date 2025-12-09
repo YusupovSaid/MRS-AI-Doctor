@@ -1,0 +1,4 @@
+# Tell GitHub to treat templates as not project code
+templates/* linguist-vendored
+static/* linguist-vendored
+*.html linguist-vendored
